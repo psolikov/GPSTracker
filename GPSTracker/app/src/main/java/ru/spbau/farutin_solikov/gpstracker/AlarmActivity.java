@@ -27,8 +27,8 @@ public class AlarmActivity extends DrawerActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Bundle notificationData = intent.getExtras();
-			int x = notificationData.getInt("xCoordinate");
-			int y = notificationData.getInt("yCoordinate");
+			double x = notificationData.getDouble("xCoordinate");
+			double y = notificationData.getDouble("yCoordinate");
 			
 			textView.setText("(" + x + ", " + y + ")");
 		}

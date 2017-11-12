@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 		  package="ru.spbau.farutin_solikov.gpstracker">
+
 	<uses-permission android:name="android.permission.WAKE_LOCK"/>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 	<application
 		android:allowBackup="true"
@@ -27,6 +30,10 @@
 		<service android:name=".CoordinatesService"
 				 android:permission="android.permission.BIND_JOB_SERVICE"/>
 
+		<meta-data
+			android:name="com.google.android.geo.API_KEY"
+			android:value="AIzaSyDAndrXRV0wFPFwrCXjzm_SgCbXlT8Bae8"/>
 	</application>
 
 </manifest>
+
