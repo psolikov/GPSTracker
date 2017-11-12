@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 		  package="ru.spbau.farutin_solikov.gpstracker">
+	<uses-permission android:name="android.permission.WAKE_LOCK"/>
 
 	<application
 		android:allowBackup="true"
@@ -8,6 +9,7 @@
 		android:label="@string/app_name"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme">
+
 		<activity
 			android:name=".TrackerActivity"
 			android:label="@string/app_name"
@@ -18,8 +20,13 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
+
 		<activity android:name=".AlarmActivity"/>
 		<activity android:name=".HistoryActivity"/>
+
+		<service android:name=".CoordinatesService"
+				 android:permission="android.permission.BIND_JOB_SERVICE"/>
+
 	</application>
 
 </manifest>
