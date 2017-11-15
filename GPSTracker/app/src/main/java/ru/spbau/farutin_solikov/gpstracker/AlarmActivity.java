@@ -9,6 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import static android.R.attr.x;
+import static android.R.attr.y;
+
 public class AlarmActivity extends DrawerActivity {
 	private CoordinatesReceiver receiver;
 	private Button alarmOn;
@@ -27,17 +32,24 @@ public class AlarmActivity extends DrawerActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Bundle notificationData = intent.getExtras();
-			double x = notificationData.getDouble("xCoordinate");
-			double y = notificationData.getDouble("yCoordinate");
+			ArrayList<Controller.Coordinate> coordinates =
+					notificationData.getParcelableArrayList("ru.spbau.farutin_solikov.gpstracker.coordinates");
 			
-			textView.setText("(" + x + ", " + y + ")");
+			Controller.Coordinate pos = coordinates.get(coordinates.size() - 1);
+			
+			// debug
+			textView.setText("(" + pos.getLat() + ", " + pos.getLng() + ")");
 		}
 	}
 	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		unregisterReceiver(receiver);
+		try {
+			unregisterReceiver(receiver);
+		} catch (IllegalArgumentException ignored) {
+			// no API methods to tell if it is registered at the moment
+		}
 	}
 	
 	private void setUpButtons() {
@@ -56,13 +68,18 @@ public class AlarmActivity extends DrawerActivity {
 						setContentView(R.layout.content_alarm);
 						setUpButtons();
 						Controller.stopCoordinatesService();
+						try {
+							unregisterReceiver(receiver);
+						} catch (IllegalArgumentException ignored) {
+							// no API methods to tell if it is registered at the moment
+						}
 					}
 				});
 				
 				textView = findViewById(R.id.tmp);
 				
 				receiver = new CoordinatesReceiver();
-				IntentFilter intentSFilter = new IntentFilter("BroadcastCoordinatesAction");
+				IntentFilter intentSFilter = new IntentFilter("ru.spbau.farutin_solikov.gpstracker.BroadcastCoordinatesAction");
 				registerReceiver(receiver, intentSFilter);
 			}
 		});

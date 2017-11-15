@@ -13,11 +13,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
 
 public class TrackerActivity extends DrawerActivity implements OnMapReadyCallback {
 	private CoordinatesReceiver receiver;
 	private GoogleMap map;
+	private LatLng lastPosition;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +35,13 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		start.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				map.clear();
+				lastPosition = null;
+				
 				Controller.startCoordinatesService(TrackerActivity.this);
 				
 				receiver = new CoordinatesReceiver();
-				IntentFilter intentSFilter = new IntentFilter("BroadcastCoordinatesAction");
+				IntentFilter intentSFilter = new IntentFilter("ru.spbau.farutin_solikov.gpstracker.BroadcastCoordinatesAction");
 				registerReceiver(receiver, intentSFilter);
 			}
 		});
@@ -45,6 +51,11 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 			@Override
 			public void onClick(View view) {
 				Controller.stopCoordinatesService();
+				try {
+					unregisterReceiver(receiver);
+				} catch (IllegalArgumentException ignored) {
+					// no API methods to tell if it is registered at the moment
+				}
 			}
 		});
 	}
@@ -52,25 +63,43 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		unregisterReceiver(receiver);
+		try {
+			unregisterReceiver(receiver);
+		} catch (IllegalArgumentException ignored) {
+			// no API methods to tell if it is registered at the moment
+		}
 	}
 	
 	@Override
 	public void onMapReady(GoogleMap googleMap) {
 		map = googleMap;
-		map.moveCamera(CameraUpdateFactory.zoomBy(7));
+		map.moveCamera(CameraUpdateFactory.zoomBy(15));
 	}
 	
 	public class CoordinatesReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Bundle notificationData = intent.getExtras();
-			double x = notificationData.getDouble("xCoordinate");
-			double y = notificationData.getDouble("yCoordinate");
+			ArrayList<Controller.Coordinate> coordinates =
+					notificationData.getParcelableArrayList("ru.spbau.farutin_solikov.gpstracker.coordinates");
 			
-			LatLng position = new LatLng(x, y);
-			map.addMarker(new MarkerOptions().position(position).title("Marker"));
-			map.moveCamera(CameraUpdateFactory.newLatLng(position));
+			PolylineOptions polylineOptions = new PolylineOptions().geodesic(true);
+			
+			if (lastPosition == null) {
+				Controller.Coordinate position = coordinates.get(0);
+				lastPosition = new LatLng(position.getLat(), position.getLng());
+			}
+
+			polylineOptions.add(lastPosition);
+			for (Controller.Coordinate position : coordinates) {
+				polylineOptions.add(new LatLng(position.getLat(), position.getLng()));
+			}
+			
+			Controller.Coordinate position = coordinates.get(coordinates.size() - 1);
+			lastPosition = new LatLng(position.getLat(), position.getLng());
+			
+			map.moveCamera(CameraUpdateFactory.newLatLng(lastPosition));
+			map.addPolyline(polylineOptions);
 		}
 	}
 }

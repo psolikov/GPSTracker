@@ -5,15 +5,19 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
 
-import java.util.Random;
+import java.util.ArrayList;
 
 import static java.lang.Math.abs;
 
 public class CoordinatesService extends JobIntentService {
 	public static final int JOB_ID = 1000;
 	private static final double EPS = 1.0E-06;
+	private static final int SLEEP = 2000;
 	private static boolean isActive;
-	private double x, y;
+	
+	private ArrayList<Controller.Coordinate> coordinates;
+	private double lat, lng;
+	private int id;
 	
 	public static void enqueueWork(Context context, Intent work) {
 		isActive = true;
@@ -26,23 +30,36 @@ public class CoordinatesService extends JobIntentService {
 	
 	@Override
 	protected void onHandleWork(@NonNull Intent intent) {
-		Random random = new Random();
-		double newX, newY;
-		x = 0;
-		y = 0;
+		boolean positionChanged;
+		
+		lat = 0;
+		lng = 0;
+		id = -1;
 		
 		while (isActive) {
-			newX = (double)(random.nextInt() % 1000) / 10000 + 51;
-			newY = (double)(random.nextInt() % 1000) / 10000 - 0.24;
+			coordinates = Controller.fetchCoordinates(id);
+			positionChanged = false;
 			
-			if (abs(newX - x) > EPS || abs(newY - y) > EPS) {
-				x = newX;
-				y = newY;
+			for (Controller.Coordinate pos : coordinates) {
+				if (abs(pos.getLat() - lat) > EPS || abs(pos.getLng() - lng) > EPS) {
+					positionChanged = true;
+					break;
+				}
+			}
+				
+			if (positionChanged) {
+				if (coordinates.size() != 0) {
+					Controller.Coordinate pos = coordinates.get(coordinates.size() - 1);
+					lat = pos.getLat();
+					lng = pos.getLng();
+					id = pos.getId();
+				}
+				
 				broadcastCoordinates();
 			}
 			
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(SLEEP);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -51,9 +68,8 @@ public class CoordinatesService extends JobIntentService {
 	
 	private void broadcastCoordinates(){
 		Intent broadcastIntent = new Intent();
-		broadcastIntent.setAction("BroadcastCoordinatesAction");
-		broadcastIntent.putExtra("xCoordinate", x);
-		broadcastIntent.putExtra("yCoordinate", y);
+		broadcastIntent.setAction("ru.spbau.farutin_solikov.gpstracker.BroadcastCoordinatesAction");
+		broadcastIntent.putParcelableArrayListExtra("ru.spbau.farutin_solikov.gpstracker.coordinates", coordinates);
 		sendBroadcast(broadcastIntent);
 	}
 }
