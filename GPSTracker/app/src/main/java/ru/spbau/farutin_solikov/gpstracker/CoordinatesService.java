@@ -12,7 +12,7 @@ import static java.lang.Math.abs;
 public class CoordinatesService extends JobIntentService {
 	public static final int JOB_ID = 1000;
 	private static final double EPS = 1.0E-06;
-	private static final int SLEEP = 2000;
+	private static final int SLEEP = 1000;
 	private static boolean isActive;
 	
 	private ArrayList<Controller.Coordinate> coordinates;
