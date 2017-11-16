@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:fab="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -10,64 +11,67 @@
 	tools:layout_editor_absoluteY="25dp"
 	tools:layout_editor_absoluteX="0dp">
 
-	<Button
-		android:id="@+id/start_tracker"
+	<fragment
+		android:id="@+id/map"
+		android:name="com.google.android.gms.maps.SupportMapFragment"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		tools:context=".TrackerActivity"/>
+
+	<com.getbase.floatingactionbutton.FloatingActionsMenu
+		android:id="@+id/menu_tracker"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Start trip"
-		app:layout_constraintLeft_toRightOf="@+id/stop_tracker"
-		android:layout_marginLeft="8dp"
-		app:layout_constraintRight_toLeftOf="@+id/save_tracker"
-		android:layout_marginRight="8dp"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintHorizontal_bias="0.526"
-		android:layout_marginBottom="8dp"/>
+		android:layout_above="@+id/find_tracker"
+		android:layout_alignEnd="@+id/map"
+		android:layout_alignRight="@+id/map"
+		fab:fab_labelsPosition="left"
+		fab:fab_addButtonColorNormal="@color/colorPrimaryDark"
+		fab:fab_addButtonColorPressed="@color/colorPrimary"/>
 
-	<Button
-		android:id="@+id/stop_tracker"
+	<com.getbase.floatingactionbutton.FloatingActionButton
+		android:id="@+id/find_tracker"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Stop"
-		android:layout_marginLeft="16dp"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		android:layout_marginBottom="8dp"/>
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"/>
 
-	<Button
-		android:id="@+id/save_tracker"
+	<!-- Should be replaced with Dialog -->
+	<android.support.design.widget.TextInputLayout
+		android:id="@+id/text_input2"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Save route"
-		android:layout_marginRight="16dp"
-		app:layout_constraintRight_toRightOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		android:layout_marginBottom="8dp"/>
+		android:background="@color/colorPrimaryDark"
+		android:visibility="gone"
+		android:layout_centerVertical="true"
+		android:layout_centerHorizontal="true">
 
-	<LinearLayout
-		android:layout_width="368dp"
-		android:layout_height="487dp"
-		android:layout_marginLeft="8dp"
-		android:layout_marginRight="8dp"
-		android:orientation="horizontal"
-		app:layout_constraintHorizontal_bias="0.0"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		android:layout_marginBottom="8dp"
-		app:layout_constraintBottom_toTopOf="@+id/start_tracker">
+		<EditText
+			android:id="@+id/route_name2"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="Route name"/>
 
-		<fragment
-			android:id="@+id/map"
-			android:name="com.google.android.gms.maps.SupportMapFragment"
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:layout_marginBottom="8dp"
-			android:layout_marginEnd="8dp"
-			android:layout_marginLeft="8dp"
-			android:layout_marginRight="8dp"
-			android:layout_marginStart="8dp"
-			android:layout_marginTop="8dp"
-			android:layout_weight="1"
-			tools:context=".TrackerActivity"/>
-	</LinearLayout>
+			android:orientation="horizontal">
 
-</android.support.constraint.ConstraintLayout>
+			<Button
+				android:id="@+id/cancel2"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="Cancel"/>
+
+			<Button
+				android:id="@+id/save2"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="Save"/>
+		</LinearLayout>
+	</android.support.design.widget.TextInputLayout>
+
+</RelativeLayout>

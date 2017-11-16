@@ -30,7 +30,7 @@ public class Controller {
 	public static void stopCoordinatesService() {
 		CoordinatesService.stop();
 	}
-	
+		
 	public static ArrayList<Coordinate> fetchCoordinates(int id) {
 		ArrayList<Coordinate> coordinates = new ArrayList<>();
 		
@@ -84,6 +84,10 @@ public class Controller {
 		}
 		
 		return coordinates;
+	}
+	
+	public static void sendCoordinates(ArrayList<Coordinate> route, String name) {
+		// send to the database
 	}
 	
 	public static class Coordinate implements Parcelable {
