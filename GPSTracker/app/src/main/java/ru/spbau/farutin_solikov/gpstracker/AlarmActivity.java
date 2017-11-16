@@ -28,7 +28,7 @@ public class AlarmActivity extends DrawerActivity {
 		setUpButtons();
 	}
 	
-	public class CoordinatesReceiver extends BroadcastReceiver {
+	private class CoordinatesReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Bundle notificationData = intent.getExtras();
