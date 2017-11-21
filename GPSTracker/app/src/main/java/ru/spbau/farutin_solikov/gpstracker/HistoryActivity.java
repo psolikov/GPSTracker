@@ -1,5 +1,6 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,7 +33,20 @@ public class HistoryActivity extends DrawerActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// get coordinates from the database for this route
+				ArrayList<Controller.Coordinate> route = new ArrayList<Controller.Coordinate>();
+				route.add(new Controller.Coordinate(-33.887837, 151.151667, 0));
+				route.add(new Controller.Coordinate(-33.888436, 151.151116, 0));
+				route.add(new Controller.Coordinate(-33.888509, 151.150785, 0));
+				route.add(new Controller.Coordinate(-33.888712, 151.150745, 0));
+				route.add(new Controller.Coordinate(-33.88896, 151.150773, 0));
+				route.add(new Controller.Coordinate(-33.889312, 151.149407, 0));
+				route.add(new Controller.Coordinate(-33.889691, 151.14908, 0));
+				route.add(new Controller.Coordinate(-33.890614, 151.149041, 0));
 				
+				
+				Intent intent = new Intent(HistoryActivity.this, RouteActivity.class);
+				intent.putParcelableArrayListExtra("ru.spbau.farutin_solikov.gpstracker.coordinates", route);
+				startActivity(intent);
 			}
 		});
 	}
