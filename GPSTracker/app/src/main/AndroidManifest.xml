@@ -24,7 +24,8 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".AlarmActivity"/>
+		<activity android:name=".AlarmActivity"
+				  android:launchMode="singleTop"/>
 		<activity android:name=".HistoryActivity"/>
 
 		<activity android:name=".RouteActivity">

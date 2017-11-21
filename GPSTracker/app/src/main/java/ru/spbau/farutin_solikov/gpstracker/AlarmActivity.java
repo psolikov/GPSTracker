@@ -1,10 +1,14 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,6 +40,26 @@ public class AlarmActivity extends DrawerActivity {
 					notificationData.getParcelableArrayList("ru.spbau.farutin_solikov.gpstracker.coordinates");
 			
 			Controller.Coordinate pos = coordinates.get(coordinates.size() - 1);
+			
+			NotificationCompat.Builder builder =
+					new NotificationCompat.Builder(AlarmActivity.this)
+							.setSmallIcon(R.mipmap.ic_launcher)
+							.setContentTitle("Position has changed!")
+							.setContentText("Current coordinates: " + "(" + pos.getLat() + ", " + pos.getLng() + ")");
+			
+			Intent resultIntent = new Intent(AlarmActivity.this, AlarmActivity.class);
+			PendingIntent resultPendingIntent =
+					PendingIntent.getActivity(
+							AlarmActivity.this,
+							0,
+							resultIntent,
+							PendingIntent.FLAG_UPDATE_CURRENT
+					);
+			builder.setContentIntent(resultPendingIntent);
+			
+			int notificationId = 1;
+			NotificationManager notifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+			notifyManager.notify(notificationId, builder.build());
 			
 			// debug
 			textView.setText("(" + pos.getLat() + ", " + pos.getLng() + ")");
