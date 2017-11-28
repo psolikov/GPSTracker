@@ -38,8 +38,13 @@
 				android:value=".HistoryActivity"/>
 		</activity>
 
-		<service android:name=".CoordinatesService"
-				 android:permission="android.permission.BIND_JOB_SERVICE"/>
+		<activity
+			android:name=".SettingsActivity"
+			android:label="@string/title_activity_settings"/>
+
+		<service
+			android:name=".CoordinatesService"
+			android:permission="android.permission.BIND_JOB_SERVICE"/>
 
 		<meta-data
 			android:name="com.google.android.geo.API_KEY"
