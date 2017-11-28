@@ -2,6 +2,7 @@ package ru.spbau.farutin_solikov.gpstracker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class Controller {
 	private static final String url = "jdbc:mysql://146.185.144.144:3306/gps?autoReconnect=true&useSSL=false";
 	private static final String user = "android";
@@ -22,6 +25,9 @@ public class Controller {
 	private static Statement stmt = null;
 	private static PreparedStatement preparedStatement = null;
 	private static ResultSet rs;
+	
+	private static final String PREF_FILE = "prefs";
+	private static String deviceId = null;
 	
 	public static void startCoordinatesService(Context context) {
 		CoordinatesService.enqueueWork(context, new Intent());
@@ -88,6 +94,29 @@ public class Controller {
 	
 	public static void sendCoordinates(ArrayList<Coordinate> route, String name) {
 		// send to the database
+	}
+	
+	public static boolean checkDeviceId(String deviceId) {
+		if (deviceId.length() % 5 != 4) {
+			return false;
+		}
+		
+		// check id in the database
+		return true;
+	}
+	
+	public static boolean userLoggedIn(Context context) {
+		final SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
+		return sharedPreferences.getString("deviceId", "").length() > 0;
+	}
+	
+	public static void saveUserDeviceId(Context context, String deviceId) {
+		final SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
+		SharedPreferences.Editor e = sharedPreferences.edit();
+		e.putString("deviceId", deviceId);
+		e.apply();
+		
+		Controller.deviceId = deviceId;
 	}
 	
 	public static class Coordinate implements Parcelable {
