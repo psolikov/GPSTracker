@@ -36,42 +36,4 @@
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentRight="true"
 		android:layout_alignParentEnd="true"/>
-
-	<!-- Should be replaced with Dialog -->
-	<android.support.design.widget.TextInputLayout
-		android:id="@+id/text_input2"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:background="@color/colorPrimaryDark"
-		android:visibility="gone"
-		android:layout_centerVertical="true"
-		android:layout_centerHorizontal="true">
-
-		<EditText
-			android:id="@+id/route_name2"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:hint="Route name"/>
-
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:orientation="horizontal">
-
-			<Button
-				android:id="@+id/cancel2"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:text="Cancel"/>
-
-			<Button
-				android:id="@+id/save2"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:text="Save"/>
-		</LinearLayout>
-	</android.support.design.widget.TextInputLayout>
-
 </RelativeLayout>

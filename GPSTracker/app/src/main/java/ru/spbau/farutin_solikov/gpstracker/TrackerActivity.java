@@ -1,17 +1,25 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -24,13 +32,15 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
+import static ru.spbau.farutin_solikov.gpstracker.R.anim.slide_out;
+
 public class TrackerActivity extends DrawerActivity implements OnMapReadyCallback {
 	private static final int ZOOM = 15;
 	
 	private CoordinatesReceiver receiver;
 	private GoogleMap map;
 	private LatLng lastPosition;
-	private ArrayList<Controller.Coordinate> route;
+	private static ArrayList<Controller.Coordinate> route;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -135,35 +145,39 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		final Animation slide_in = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in);
 		final Animation slide_out = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out);
 		
-		// Replace with Dialog
-		final TextInputLayout inputLayout = findViewById(R.id.text_input2);
-		inputLayout.setVisibility(View.VISIBLE);
-		inputLayout.startAnimation(slide_in);
-		
-		final EditText nameInput = findViewById(R.id.route_name2);
-		nameInput.setText("");
-		
-		Button save = findViewById(R.id.save2);
-		save.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				String name = nameInput.getText().toString();
-				if (name.length() != 0) {
-					Controller.sendCoordinates(route, name);
-					inputLayout.startAnimation(slide_out);
-					inputLayout.setVisibility(View.GONE);
-				}
-			}
-		});
-		
-		Button cancel = findViewById(R.id.cancel2);
-		cancel.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				inputLayout.startAnimation(slide_out);
-				inputLayout.setVisibility(View.GONE);
-			}
-		});
+		DialogFragment saveDialogFragment = new SaveDialogFragment();
+		saveDialogFragment.show(getSupportFragmentManager(), "Save route");
+	}
+	
+	public static class SaveDialogFragment extends DialogFragment {
+		@NonNull
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			final LayoutInflater inflater = getActivity().getLayoutInflater();
+			final View view = inflater.inflate(R.layout.dialog_save, null);
+			
+			builder.setView(view)
+					.setTitle("Save route")
+					.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int id) {
+							EditText nameInput = view.findViewById(R.id.route_name);
+							nameInput.setText("");
+							String name = nameInput.getText().toString();
+							if (name.length() != 0) {
+								Controller.sendCoordinates(route, name);
+							}
+						}
+					})
+					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							SaveDialogFragment.this.getDialog().cancel();
+						}
+					});
+			
+			return builder.create();
+		}
 	}
 	
 	private class CoordinatesReceiver extends BroadcastReceiver {
