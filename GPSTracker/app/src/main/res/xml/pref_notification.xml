@@ -1,0 +1,17 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<SwitchPreference
+		android:defaultValue="true"
+		android:key="notifications_new_message"
+		android:title="Notifications"
+		android:summaryOn=""
+		android:summaryOff=""/>
+
+	<SwitchPreference
+		android:defaultValue="true"
+		android:key="notifications_light"
+		android:title="Light notification"
+		android:summaryOn=""
+		android:summaryOff=""/>
+
+</PreferenceScreen>

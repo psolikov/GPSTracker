@@ -17,17 +17,17 @@ import java.sql.Statement;
 import static android.content.Context.MODE_PRIVATE;
 
 public class Controller {
+	public static final String PREF_FILE = "prefs";
+	
 	private static final String url = "jdbc:mysql://146.185.144.144:3306/gps?autoReconnect=true&useSSL=false";
 	private static final String user = "android";
-	private static final String password = "GPSTracker-MySQL123";
 	
+	private static final String password = "GPSTracker-MySQL123";
 	private static Connection con;
 	private static Statement stmt = null;
 	private static PreparedStatement preparedStatement = null;
-	private static ResultSet rs;
 	
-	private static final String PREF_FILE = "prefs";
-	private static String deviceId = null;
+	private static ResultSet rs;
 	
 	public static void startCoordinatesService(Context context) {
 		CoordinatesService.enqueueWork(context, new Intent());
@@ -106,17 +106,20 @@ public class Controller {
 	}
 	
 	public static boolean userLoggedIn(Context context) {
-		final SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
+		SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
 		return sharedPreferences.getString("deviceId", "").length() > 0;
 	}
 	
+	public static boolean notificationsOn(Context context) {
+		SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
+		return sharedPreferences.getString("notifications_new_message", "true").equals("true");
+	}
+	
 	public static void saveUserDeviceId(Context context, String deviceId) {
-		final SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
-		SharedPreferences.Editor e = sharedPreferences.edit();
-		e.putString("deviceId", deviceId);
-		e.apply();
-		
-		Controller.deviceId = deviceId;
+		SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putString("deviceId", deviceId);
+		editor.apply();
 	}
 	
 	public static class Coordinate implements Parcelable {
