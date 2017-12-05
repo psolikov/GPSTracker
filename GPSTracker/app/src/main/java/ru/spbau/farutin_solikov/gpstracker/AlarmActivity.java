@@ -1,6 +1,5 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -15,8 +14,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import static android.R.attr.x;
-import static android.R.attr.y;
 
 public class AlarmActivity extends DrawerActivity {
 	private CoordinatesReceiver receiver;
@@ -28,7 +25,6 @@ public class AlarmActivity extends DrawerActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.content_alarm);
-		
 		setUpButtons();
 	}
 	
@@ -41,6 +37,25 @@ public class AlarmActivity extends DrawerActivity {
 			
 			Controller.Coordinate pos = coordinates.get(coordinates.size() - 1);
 			
+			notifyUser(pos);
+			
+			// debug
+			textView.setText("(" + pos.getLat() + ", " + pos.getLng() + ")");
+		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		try {
+			unregisterReceiver(receiver);
+		} catch (IllegalArgumentException ignored) {
+			// no API methods to tell if it is registered at the moment
+		}
+	}
+
+	private void notifyUser(Controller.Coordinate pos) {
+		if (Controller.notificationsOn(this)) {
 			NotificationCompat.Builder builder =
 					new NotificationCompat.Builder(AlarmActivity.this)
 							.setSmallIcon(R.mipmap.ic_launcher)
@@ -60,19 +75,6 @@ public class AlarmActivity extends DrawerActivity {
 			int notificationId = 1;
 			NotificationManager notifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 			notifyManager.notify(notificationId, builder.build());
-			
-			// debug
-			textView.setText("(" + pos.getLat() + ", " + pos.getLng() + ")");
-		}
-	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		try {
-			unregisterReceiver(receiver);
-		} catch (IllegalArgumentException ignored) {
-			// no API methods to tell if it is registered at the moment
 		}
 	}
 	

@@ -8,18 +8,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -32,7 +25,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
-import static ru.spbau.farutin_solikov.gpstracker.R.anim.slide_out;
 
 public class TrackerActivity extends DrawerActivity implements OnMapReadyCallback {
 	private static final int ZOOM = 15;
@@ -142,9 +134,6 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 	}
 	
 	private void saveRoute() {
-		final Animation slide_in = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in);
-		final Animation slide_out = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out);
-		
 		DialogFragment saveDialogFragment = new SaveDialogFragment();
 		saveDialogFragment.show(getSupportFragmentManager(), "Save route");
 	}
