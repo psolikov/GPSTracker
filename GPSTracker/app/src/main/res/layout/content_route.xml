@@ -7,7 +7,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	app:layout_behavior="@string/appbar_scrolling_view_behavior"
-	tools:context="ru.spbau.farutin_solikov.gpstracker.TrackerActivity"
+	tools:context="ru.spbau.farutin_solikov.gpstracker.RouteActivity"
 	tools:layout_editor_absoluteY="25dp"
 	tools:layout_editor_absoluteX="0dp">
 
@@ -16,5 +16,54 @@
 		android:name="com.google.android.gms.maps.SupportMapFragment"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		tools:context=".TrackerActivity"/>
+		tools:context=".RouteActivity"/>
+
+	<com.getbase.floatingactionbutton.FloatingActionButton
+		android:id="@+id/route_info_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentEnd="true"
+		android:layout_alignParentRight="true"/>
+
+	<RelativeLayout
+		android:id="@+id/route_info"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:background="@color/primaryColor"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:layout_marginLeft="8dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginBottom="8dp">
+
+			<TextView
+				android:id="@+id/route_length"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				tools:text="Route length"/>
+
+		</LinearLayout>
+
+		<ImageView
+			android:id="@+id/hide_info"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end"
+			fab:srcCompat="@drawable/ic_keyboard_arrow_down_white_24dp"
+			android:layout_alignParentTop="true"
+			android:layout_alignParentRight="true"
+			android:layout_alignParentEnd="true"
+			android:layout_marginRight="8dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginBottom="8dp"/>
+	</RelativeLayout>
+
 </RelativeLayout>
