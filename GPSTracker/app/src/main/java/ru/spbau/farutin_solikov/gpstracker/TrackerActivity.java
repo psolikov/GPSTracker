@@ -66,8 +66,9 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		
 		FloatingActionButton start = new FloatingActionButton(this);
 		start.setTitle("Start trip");
-		start.setColorNormalResId(R.color.colorPrimaryDark);
-		start.setColorPressedResId(R.color.colorPrimary);
+		start.setIcon(R.drawable.ic_play_arrow_white_24dp);
+		start.setColorNormalResId(R.color.primaryColor);
+		start.setColorPressedResId(R.color.primaryLightColor);
 		start.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -87,8 +88,9 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		
 		FloatingActionButton stop = new FloatingActionButton(this);
 		stop.setTitle("Stop");
-		stop.setColorNormalResId(R.color.colorPrimaryDark);
-		stop.setColorPressedResId(R.color.colorPrimary);
+		stop.setIcon(R.drawable.ic_stop_white_24dp);
+		stop.setColorNormalResId(R.color.primaryColor);
+		stop.setColorPressedResId(R.color.primaryLightColor);
 		stop.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -105,8 +107,9 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		
 		FloatingActionButton save = new FloatingActionButton(this);
 		save.setTitle("Save route");
-		save.setColorNormalResId(R.color.colorPrimaryDark);
-		save.setColorPressedResId(R.color.colorPrimary);
+		save.setIcon(R.drawable.ic_save_white_24dp);
+		save.setColorNormalResId(R.color.primaryColor);
+		save.setColorPressedResId(R.color.primaryLightColor);
 		save.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -121,8 +124,9 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		menu.addButton(save);
 		
 		FloatingActionButton find = findViewById(R.id.find_tracker);
-		find.setColorNormalResId(R.color.colorPrimaryDark);
-		find.setColorPressedResId(R.color.colorPrimary);
+		find.setIcon(R.drawable.ic_my_location_white_24dp);
+		find.setColorNormalResId(R.color.primaryColor);
+		find.setColorPressedResId(R.color.primaryLightColor);
 		find.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {

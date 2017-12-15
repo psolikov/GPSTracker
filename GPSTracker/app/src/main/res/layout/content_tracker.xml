@@ -26,8 +26,8 @@
 		android:layout_alignEnd="@+id/map"
 		android:layout_alignRight="@+id/map"
 		fab:fab_labelsPosition="left"
-		fab:fab_addButtonColorNormal="@color/colorPrimaryDark"
-		fab:fab_addButtonColorPressed="@color/colorPrimary"/>
+		fab:fab_addButtonColorNormal="@color/primaryColor"
+		fab:fab_addButtonColorPressed="@color/primaryLightColor"/>
 
 	<com.getbase.floatingactionbutton.FloatingActionButton
 		android:id="@+id/find_tracker"
