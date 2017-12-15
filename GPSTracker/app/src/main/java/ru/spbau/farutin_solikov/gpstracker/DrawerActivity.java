@@ -74,8 +74,6 @@ public class DrawerActivity extends AppCompatActivity
 			classToStart = AlarmActivity.class;
 		} else if (id == R.id.nav_history) {
 			classToStart = HistoryActivity.class;
-		} else if (id == R.id.nav_share) {
-			
 		}
 		
 		Intent intent = new Intent(DrawerActivity.this, classToStart);
