@@ -21,6 +21,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 	private CoordinatesReceiver receiver;
 	private GoogleMap map;
 	private LatLng lastPosition;
+	private Controller.Coordinate startPosition;
+	private boolean startImmediately = false;
 	private static ArrayList<Controller.Coordinate> route;
 	
 	@Override
@@ -44,6 +47,12 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		mapFragment.getMapAsync(this);
 		
 		createMenu();
+		
+		Intent intent = getIntent();
+		if (intent.hasExtra("ru.spbau.farutin_solikov.gpstracker.position")) {
+			startPosition = intent.getParcelableExtra("ru.spbau.farutin_solikov.gpstracker.position");
+			startImmediately = true;
+		}
 	}
 	
 	@Override
@@ -59,6 +68,10 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 	@Override
 	public void onMapReady(GoogleMap googleMap) {
 		map = googleMap;
+		
+		if (startImmediately) {
+			startTracking(startPosition);
+		}
 	}
 	
 	private void createMenu() {
@@ -74,15 +87,9 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 			public void onClick(View view) {
 				menu.collapse();
 				
-				map.clear();
-				lastPosition = null;
-				route = new ArrayList<Controller.Coordinate>();
-				
-				Controller.startCoordinatesService(TrackerActivity.this);
-				
-				receiver = new CoordinatesReceiver();
-				IntentFilter intentSFilter = new IntentFilter("ru.spbau.farutin_solikov.gpstracker.BroadcastCoordinatesAction");
-				registerReceiver(receiver, intentSFilter);
+				if (map != null) {
+					startTracking(null);
+				}
 			}
 		});
 		
@@ -137,6 +144,28 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		});
 	}
 	
+	private void startTracking(Controller.Coordinate startPosition) {
+		map.clear();
+		route = new ArrayList<>();
+		
+		if (startPosition == null) {
+			lastPosition = null;
+		} else {
+			lastPosition = new LatLng(startPosition.getLat(), startPosition.getLng());
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastPosition, ZOOM));
+			map.addMarker(new MarkerOptions().position(lastPosition));
+			route.add(startPosition);
+			
+			lastPosition = null;
+		}
+		
+		Controller.startCoordinatesService(TrackerActivity.this);
+		
+		receiver = new CoordinatesReceiver();
+		IntentFilter intentSFilter = new IntentFilter("ru.spbau.farutin_solikov.gpstracker.BroadcastCoordinatesAction");
+		registerReceiver(receiver, intentSFilter);
+	}
+	
 	private void saveRoute() {
 		DialogFragment saveDialogFragment = new SaveDialogFragment();
 		saveDialogFragment.show(getSupportFragmentManager(), "Save route");
@@ -186,6 +215,7 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 				Controller.Coordinate position = coordinates.get(0);
 				lastPosition = new LatLng(position.getLat(), position.getLng());
 				map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastPosition, ZOOM));
+				route.add(position);
 			}
 
 			polylineOptions.add(lastPosition);
