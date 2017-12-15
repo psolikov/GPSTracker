@@ -16,7 +16,7 @@
 
 	<header
 		android:fragment="ru.spbau.farutin_solikov.gpstracker.SettingsActivity$UserIDPreferenceFragment"
-		android:icon="@drawable/ic_sync_black_24dp"
+		android:icon="@drawable/ic_perm_identity_black_24dp"
 		android:title="User ID"/>
 
 </preference-headers>
