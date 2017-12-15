@@ -66,7 +66,9 @@ public class Controller {
 			sqlEx.printStackTrace();
 		} finally {
 			try {
-				con.close();
+				if (con != null) {
+					con.close();
+				}
 			} catch (SQLException ignored) {
 			}
 			try {
