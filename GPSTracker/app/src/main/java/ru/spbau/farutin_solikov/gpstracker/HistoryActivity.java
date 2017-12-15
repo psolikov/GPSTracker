@@ -1,11 +1,15 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
 
 import java.util.ArrayList;
 
@@ -15,18 +19,18 @@ public class HistoryActivity extends DrawerActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.content_history);
-	
-		ListView historyList = findViewById(R.id.history_list);
+				
+		final ListView historyList = findViewById(R.id.history_list);
 		
 		// get names from the database
-		ArrayList<String> routesNames = new ArrayList<>();
+		final ArrayList<String> routesNames = new ArrayList<>();
 		routesNames.add("1");
 		routesNames.add("2");
 		routesNames.add("3");
 		routesNames.add("4");
 		routesNames.add("5");
 		
-		ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routesNames);
+		final ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routesNames);
 		historyList.setAdapter(adapter);
 		
 		historyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -49,6 +53,43 @@ public class HistoryActivity extends DrawerActivity {
 				startActivity(intent);
 			}
 		});
+		
+		historyList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(HistoryActivity.this);
+				
+				builder.setPositiveButton("delete", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						routesNames.remove(i);
+						adapter.notifyDataSetChanged();
+						
+						if (routesNames.size() == 0) {
+							TextView emptyList = findViewById(R.id.empty_list);
+							emptyList.setVisibility(View.VISIBLE);
+						}
+						
+						// delete route in the database
+					}
+				});
+				
+				builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						
+					}
+				});
+				
+				builder.setTitle("Delete this route?");
+				builder.create().show();
+				
+				return true;
+			}
+		});
+		
+		if (routesNames.size() == 0) {
+			TextView emptyList = findViewById(R.id.empty_list);
+			emptyList.setVisibility(View.VISIBLE);
+		}
 	}
 	
 }
