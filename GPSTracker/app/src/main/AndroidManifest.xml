@@ -3,19 +3,19 @@
 		  package="ru.spbau.farutin_solikov.gpstracker">
 
 	<uses-permission android:name="android.permission.WAKE_LOCK"/>
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 	<application
-		android:allowBackup="true"
-		android:icon="@mipmap/ic_launcher"
 		android:label="@string/app_name"
+		android:icon="@mipmap/ic_launcher"
+		android:allowBackup="true"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme">
+
 		<activity
 			android:name=".LoginActivity"
 			android:label="@string/app_name"
+			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme.DarkActionBar">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
@@ -23,12 +23,23 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
-		<activity android:name=".TrackerActivity"/>
+
+		<activity
+			android:name=".TrackerActivity"
+			android:screenOrientation="portrait"/>
+
 		<activity
 			android:name=".AlarmActivity"
+			android:screenOrientation="portrait"
 			android:launchMode="singleTop"/>
-		<activity android:name=".HistoryActivity"/>
-		<activity android:name=".RouteActivity">
+
+		<activity
+			android:name=".HistoryActivity"
+			android:screenOrientation="portrait"/>
+
+		<activity
+			android:name=".RouteActivity"
+			android:screenOrientation="portrait">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value=".HistoryActivity"/>
@@ -36,7 +47,8 @@
 
 		<activity
 			android:name=".SettingsActivity"
-			android:label="@string/title_activity_settings2"
+			android:label="@string/title_activity_settings"
+			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme.DarkActionBar">
 		</activity>
 
@@ -49,5 +61,4 @@
 			android:value="AIzaSyAN3oIa-hIVpTEJ127q5KUlcWN_CdF9V_k"/>
 
 	</application>
-
 </manifest>
