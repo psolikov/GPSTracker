@@ -9,6 +9,9 @@ import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.Button;
 
+/**
+ * Alarm mode - notifying user once vehicle has changed position.
+ */
 public class AlarmActivity extends DrawerActivity {
 	private static final int ALARM_NOTIFICATION_ID = 1;
 	
@@ -31,7 +34,11 @@ public class AlarmActivity extends DrawerActivity {
 			// no API methods to tell if it is registered at the moment
 		}
 	}
-		
+	
+	/**
+	 * Notifies user and changes layout content.
+	 * @param position position where vehicle was moved to
+	 */
 	public void positionChanged(final Coordinate position) {
 		notifyUser();
 		setContentView(R.layout.content_alarm_changed);

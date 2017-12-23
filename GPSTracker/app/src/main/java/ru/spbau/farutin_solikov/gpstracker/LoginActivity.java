@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * Activity to log in.
+ */
 public class LoginActivity extends AppCompatActivity {
 	private EditText deviceId;
 	
@@ -46,6 +49,10 @@ public class LoginActivity extends AppCompatActivity {
 		startActivity(intent);
 	}
 	
+	/**
+	 * Changes input id so that it corresponds following format:
+	 * XXXX XXXX XXXX ...
+	 */
 	private class FourLetterFormatWatcher implements TextWatcher {
 		private static final char SPACE = ' ';
 		private boolean lock;

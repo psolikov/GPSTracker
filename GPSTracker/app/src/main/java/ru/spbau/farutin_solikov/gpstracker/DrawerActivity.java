@@ -13,6 +13,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+/**
+ * Basic DrawerActivity with navigation.
+ */
 public class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 		
 	@Override

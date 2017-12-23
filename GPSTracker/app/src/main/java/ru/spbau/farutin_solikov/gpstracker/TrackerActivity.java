@@ -24,7 +24,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
-
+/**
+ * Activity to track current position and display route on the map.
+ */
 public class TrackerActivity extends DrawerActivity implements OnMapReadyCallback {
 	private static final int ZOOM = 15;
 	
@@ -73,6 +75,10 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		}
 	}
 	
+	/**
+	 * Draws route on Google Map.
+	 * @param coordinates route to draw
+	 */
 	public void drawRoute(ArrayList<Coordinate> coordinates) {
 		PolylineOptions polylineOptions = new PolylineOptions().geodesic(true);
 		

@@ -9,6 +9,9 @@ import java.util.ArrayList;
 
 import static java.lang.Math.abs;
 
+/**
+ * This class checks periodically whether position of the vehicle has been changed or not.
+ */
 public class CoordinatesService extends JobIntentService {
 	public static final int JOB_ID = 1000;
 	private static final double EPS = 1.0E-06;

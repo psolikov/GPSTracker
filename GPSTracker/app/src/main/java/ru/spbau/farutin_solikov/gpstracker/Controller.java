@@ -26,7 +26,13 @@ import java.sql.Statement;
 
 import static android.content.Context.MODE_PRIVATE;
 
+/**
+ * Class with supporting methods.
+ */
 public class Controller {
+	/**
+	 * SharedPreferences filename.
+	 */
 	public static final String PREF_FILE = "prefs";
 	
 	private static final String url = "jdbc:mysql://146.185.144.144:3306/gps?autoReconnect=true&useSSL=false";
@@ -39,14 +45,26 @@ public class Controller {
 	
 	private static ResultSet rs;
 	
+	/**
+	 * Starts CoordinateService.
+	 * @param context context to enqueue with
+	 */
 	public static void startCoordinatesService(Context context) {
 		CoordinatesService.enqueueWork(context, new Intent());
 	}
 	
+	/**
+	 * Stops CoordinateService.
+	 */
 	public static void stopCoordinatesService() {
 		CoordinatesService.stop();
 	}
-		
+	
+	/**
+	 * Fetches new coordinates from the database.
+	 * @param id id of the coordinate after which should take new coordinates
+	 * @return new coordinates
+	 */
 	public static ArrayList<Coordinate> fetchCoordinates(int id) {
 		ArrayList<Coordinate> coordinates = new ArrayList<>();
 		
@@ -105,10 +123,20 @@ public class Controller {
 		return coordinates;
 	}
 	
+	/**
+	 * Saves route to the database.
+	 * @param route route to save
+	 * @param name route name
+	 */
 	public static void sendCoordinates(ArrayList<Coordinate> route, String name) {
 		// TODO: send to the database
 	}
 	
+	/**
+	 * Checks whether id is correct or not.
+	 * @param deviceId input id
+	 * @return true if id has correct format and exists, false otherwise
+	 */
 	public static boolean checkDeviceId(String deviceId) {
 		if (deviceId.length() % 5 != 4) {
 			return false;
@@ -118,16 +146,32 @@ public class Controller {
 		return true;
 	}
 	
+	/**
+	 * Checks whether user has already logged in or not.
+	 * @param context context with SharedPreferences
+	 * @return true if user has already logged in, false otherwise
+	 */
 	public static boolean userLoggedIn(Context context) {
 		SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
 		return sharedPreferences.getString(context.getString(R.string.preference_user_id), "").length() > 0;
 	}
 	
+	/**
+	 * Checks whether notifications are turn on or not.
+	 * @param context context with SharedPreferences
+	 * @return true if notifications are turn on, false otherwise
+	 * @return
+	 */
 	public static boolean notificationsOn(Context context) {
 		SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
 		return sharedPreferences.getString(context.getString(R.string.preference_notifications_new_message), "true").equals("true");
 	}
 	
+	/**
+	 * Saves device id.
+	 * @param context context with SharedPreferences
+	 * @param deviceId id to save
+	 */
 	public static void saveUserDeviceId(Context context, String deviceId) {
 		SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -135,6 +179,12 @@ public class Controller {
 		editor.apply();
 	}
 	
+	/**
+	 * Makes snapshot of map with route and builds intent with it to send.
+	 * @param instance activity from which snapshot is sending
+	 * @param map map to send
+	 * @param routeName route name
+	 */
 	public static void sendSnapshot(final RouteActivity instance, GoogleMap map, final String routeName) {
 		GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
 			Bitmap bitmap;
@@ -177,6 +227,9 @@ public class Controller {
 		map.snapshot(callback);
 	}
 	
+	/**
+	 * Class to receive coordinates broadcasted by CoordinatorService.
+	 */
 	private static class CoordinatesReceiver extends BroadcastReceiver {
 		ArrayList<Coordinate> coordinates = null;
 		
@@ -187,6 +240,9 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Once coordinates are received, notifies AlarmActivity.
+	 */
 	public static class AlarmCoordinatesReceiver extends CoordinatesReceiver {
 		private AlarmActivity alarmActivityInstance = null;
 		
@@ -209,6 +265,9 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Once coordinates are received, draws route in TrackerActivity.
+	 */
 	public static class TrackerCoordinatesReceiver extends CoordinatesReceiver {
 		private TrackerActivity trackerActivityInstance = null;
 		

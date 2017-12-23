@@ -3,6 +3,9 @@ package ru.spbau.farutin_solikov.gpstracker;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Class for storing map coordinates.
+ */
 public class Coordinate implements Parcelable {
 	private double lat;
 	private double lng;

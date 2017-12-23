@@ -28,6 +28,9 @@ import com.google.maps.android.SphericalUtil;
 import java.util.ArrayList;
 import static java.lang.Thread.sleep;
 
+/**
+ * Activity to display saved route on the map.
+ */
 public class RouteActivity extends DrawerActivity implements OnMapReadyCallback {
 	private static final int ZOOM = 15;
 	private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1;

@@ -12,6 +12,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/**
+ * Activity with saved routes.
+ */
 public class HistoryActivity extends DrawerActivity {
 	
 	@Override

@@ -33,13 +33,13 @@
 	<string name="history_empty_list">You don\'t have saved routes</string>
 	<string name="save_hint">Route name</string>
 
-	<string name="preference_notifications_new_message">notifications_new_message</string>
-	<string name="preference_user_id">user_id</string>
-	<string name="preference_quit">quit</string>
-
 	<string name="drawer_tracker">Tracker</string>
 	<string name="drawer_alarm">Alarm</string>
 	<string name="drawer_history">History</string>
+
+	<string name="preference_notifications_new_message">notifications_new_message</string>
+	<string name="preference_user_id">user_id</string>
+	<string name="preference_quit">quit</string>
 
 	<string name="pref_header_notifications">Notifications</string>
 	<string name="pref_header_user_id">User ID</string>
