@@ -3,7 +3,6 @@ package ru.spbau.farutin_solikov.gpstracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -36,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
 					Controller.saveUserDeviceId(LoginActivity.this, sDeviceId);
 					loginSuccess();
 				} else {
-					Toast.makeText(LoginActivity.this, "Wrong Device Id", Toast.LENGTH_SHORT).show();
+					Toast.makeText(LoginActivity.this, getString(R.string.toast_login), Toast.LENGTH_SHORT).show();
 				}
 			}
 		});

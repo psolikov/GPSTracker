@@ -4,80 +4,44 @@
 	<string name="navigation_drawer_open">Open navigation drawer</string>
 	<string name="navigation_drawer_close">Close navigation drawer</string>
 
-	<string name="title_activity_login">Sign in</string>
-
+	<string name="title_alarm_notification">Position has changed!</string>
 	<string name="title_activity_settings">Settings</string>
+	<string name="title_dialog_delete">Delete this route?</string>
+	<string name="title_dialog_change">Change device ID?</string>
+	<string name="title_dialog_save">Save route</string>
+	<string name="title_button_delete">delete</string>
+	<string name="title_button_cancel">cancel</string>
+	<string name="title_button_change">change</string>
+	<string name="title_button_save">save</string>
+	<string name="title_button_login">Login</string>
+	<string name="title_button_turn_on">Turn On</string>
+	<string name="title_button_turn_off">Turn Off</string>
+	<string name="title_button_track_position">Track position</string>
+	<string name="title_chooser">Choose app:</string>
 
-	<!-- Strings related to Settings -->
+	<string name="extra_position">ru.spbau.farutin_solikov.gpstracker.position</string>
+	<string name="extra_route_name">ru.spbau.farutin_solikov.gpstracker.route_name</string>
+	<string name="extra_coordinates">ru.spbau.farutin_solikov.gpstracker.coordinates</string>
 
-	<!-- Example General settings -->
-	<string name="pref_header_general">General</string>
+	<string name="broadcast_content_coordinates">ru.spbau.farutin_solikov.gpstracker.BroadcastCoordinatesAction</string>
 
-	<string name="pref_title_social_recommendations">Enable social recommendations</string>
-	<string name="pref_description_social_recommendations">Recommendations for people to contact
-		based on your message history
-	</string>
+	<string name="toast_login">Wrong Device Id</string>
+	<string name="toast_route">Failed making screenshot: </string>
+	<string name="route_length_format">Route length: %1$,.2fm</string>
+	<string name="login_hint">Device Id</string>
+	<string name="alarm_position_changed">Position has changed!</string>
+	<string name="history_empty_list">You don\'t have saved routes</string>
+	<string name="save_hint">Route name</string>
 
-	<string name="pref_title_display_name">Display name</string>
-	<string name="pref_default_display_name">John Smith</string>
+	<string name="preference_notifications_new_message">notifications_new_message</string>
+	<string name="preference_user_id">user_id</string>
+	<string name="preference_quit">quit</string>
 
-	<string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-	<string-array name="pref_example_list_titles">
-		<item>Always</item>
-		<item>When possible</item>
-		<item>Never</item>
-	</string-array>
-	<string-array name="pref_example_list_values">
-		<item>1</item>
-		<item>0</item>
-		<item>-1</item>
-	</string-array>
+	<string name="drawer_tracker">Tracker</string>
+	<string name="drawer_alarm">Alarm</string>
+	<string name="drawer_history">History</string>
 
-	<!-- Example settings for Data & Sync -->
-	<string name="pref_header_data_sync">Data &amp; sync</string>
-
-	<string name="pref_title_sync_frequency">Sync frequency</string>
-	<string-array name="pref_sync_frequency_titles">
-		<item>15 minutes</item>
-		<item>30 minutes</item>
-		<item>1 hour</item>
-		<item>3 hours</item>
-		<item>6 hours</item>
-		<item>Never</item>
-	</string-array>
-	<string-array name="pref_sync_frequency_values">
-		<item>15</item>
-		<item>30</item>
-		<item>60</item>
-		<item>180</item>
-		<item>360</item>
-		<item>-1</item>
-	</string-array>
-
-	<string-array name="list_preference_entries">
-		<item>Entry 1</item>
-		<item>Entry 2</item>
-		<item>Entry 3</item>
-	</string-array>
-
-	<string-array name="list_preference_entry_values">
-		<item>1</item>
-		<item>2</item>
-		<item>3</item>
-	</string-array>
-
-	<string-array name="multi_select_list_preference_default_value"/>
-
-	<string name="pref_title_system_sync_settings">System sync settings</string>
-
-	<!-- Example settings for Notifications -->
 	<string name="pref_header_notifications">Notifications</string>
+	<string name="pref_header_user_id">User ID</string>
 
-	<string name="pref_title_new_message_notifications">New message notifications</string>
-
-	<string name="pref_title_ringtone">Ringtone</string>
-	<string name="pref_ringtone_silent">Silent</string>
-
-	<string name="pref_title_vibrate">Vibrate</string>
-	<string name="title_activity_settings2">Settings</string>
 </resources>

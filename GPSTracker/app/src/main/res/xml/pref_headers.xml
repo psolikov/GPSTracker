@@ -2,13 +2,6 @@
 
 	<!-- These settings headers are only used on tablets. -->
 
-	<!--
-	<header
-		android:fragment="ru.spbau.farutin_solikov.gpstracker.SettingsActivity$GeneralPreferenceFragment"
-		android:icon="@drawable/ic_info_black_24dp"
-		android:title="@string/pref_header_general"/>
-	-->
-
 	<header
 		android:fragment="ru.spbau.farutin_solikov.gpstracker.SettingsActivity$NotificationPreferenceFragment"
 		android:icon="@drawable/ic_notifications_black_24dp"
@@ -17,6 +10,6 @@
 	<header
 		android:fragment="ru.spbau.farutin_solikov.gpstracker.SettingsActivity$UserIDPreferenceFragment"
 		android:icon="@drawable/ic_perm_identity_black_24dp"
-		android:title="User ID"/>
+		android:title="@string/pref_header_user_id"/>
 
 </preference-headers>

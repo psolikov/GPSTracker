@@ -12,7 +12,7 @@
 		android:id="@+id/alarm_off"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Turn Off"
+		android:text="@string/title_button_turn_off"
 		app:layout_constraintTop_toTopOf="parent"
 		android:layout_marginTop="8dp"
 		app:layout_constraintBottom_toBottomOf="parent"

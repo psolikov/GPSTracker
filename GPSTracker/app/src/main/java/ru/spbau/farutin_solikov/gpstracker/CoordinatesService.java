@@ -15,9 +15,7 @@ public class CoordinatesService extends JobIntentService {
 	private static final int SLEEP = 1000;
 	private static boolean isActive;
 	
-	private ArrayList<Controller.Coordinate> coordinates;
-	private double lat, lng;
-	private int id;
+	private ArrayList<Coordinate> coordinates;
 	
 	public static void enqueueWork(Context context, Intent work) {
 		isActive = true;
@@ -32,15 +30,15 @@ public class CoordinatesService extends JobIntentService {
 	protected void onHandleWork(@NonNull Intent intent) {
 		boolean positionChanged;
 		
-		lat = 0;
-		lng = 0;
-		id = -1;
+		double lat = 0;
+		double lng = 0;
+		int id = -1;
 		
 		while (isActive) {
 			coordinates = Controller.fetchCoordinates(id);
 			positionChanged = false;
 			
-			for (Controller.Coordinate pos : coordinates) {
+			for (Coordinate pos : coordinates) {
 				if (abs(pos.getLat() - lat) > EPS || abs(pos.getLng() - lng) > EPS) {
 					positionChanged = true;
 					break;
@@ -49,7 +47,7 @@ public class CoordinatesService extends JobIntentService {
 				
 			if (positionChanged) {
 				if (coordinates.size() != 0) {
-					Controller.Coordinate pos = coordinates.get(coordinates.size() - 1);
+					Coordinate pos = coordinates.get(coordinates.size() - 1);
 					lat = pos.getLat();
 					lng = pos.getLng();
 					id = pos.getId();
@@ -68,8 +66,8 @@ public class CoordinatesService extends JobIntentService {
 	
 	private void broadcastCoordinates(){
 		Intent broadcastIntent = new Intent();
-		broadcastIntent.setAction("ru.spbau.farutin_solikov.gpstracker.BroadcastCoordinatesAction");
-		broadcastIntent.putParcelableArrayListExtra("ru.spbau.farutin_solikov.gpstracker.coordinates", coordinates);
+		broadcastIntent.setAction(getString(R.string.broadcast_content_coordinates));
+		broadcastIntent.putParcelableArrayListExtra(getString(R.string.extra_coordinates), coordinates);
 		sendBroadcast(broadcastIntent);
 	}
 }

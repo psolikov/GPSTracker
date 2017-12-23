@@ -5,14 +5,14 @@
 		<item
 			android:id="@+id/nav_tracker"
 			android:icon="@drawable/ic_near_me_black_24dp"
-			android:title="Tracker"/>
+			android:title="@string/drawer_tracker"/>
 		<item
 			android:id="@+id/nav_alarm"
 			android:icon="@drawable/ic_notifications_black_24dp"
-			android:title="Alarm"/>
+			android:title="@string/drawer_alarm"/>
 		<item
 			android:id="@+id/nav_history"
 			android:icon="@drawable/ic_map_black_24dp"
-			android:title="History"/>
+			android:title="@string/drawer_history"/>
 	</group>
 </menu>

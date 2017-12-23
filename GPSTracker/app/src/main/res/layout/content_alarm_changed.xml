@@ -12,7 +12,7 @@
 		android:id="@+id/track_position"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Track position"
+		android:text="@string/title_button_track_position"
 		app:layout_constraintTop_toTopOf="parent"
 		android:layout_marginTop="8dp"
 		app:layout_constraintBottom_toBottomOf="parent"
@@ -25,7 +25,7 @@
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Position has changed!"
+		android:text="@string/alarm_position_changed"
 		android:layout_marginBottom="8dp"
 		app:layout_constraintBottom_toTopOf="@+id/track_position"
 		app:layout_constraintTop_toTopOf="parent"

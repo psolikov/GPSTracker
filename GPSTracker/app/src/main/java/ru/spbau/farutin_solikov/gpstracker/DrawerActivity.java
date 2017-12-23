@@ -13,8 +13,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-public class DrawerActivity extends AppCompatActivity
-		implements NavigationView.OnNavigationItemSelectedListener {
+public class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

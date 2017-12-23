@@ -1,11 +1,21 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.sql.PreparedStatement;
 import java.sql.Connection;
@@ -53,13 +63,14 @@ public class Controller {
 			double lat;
 			double lng;
 			int coordinate_id;
+			
 			while (rs.next()) {
 				lat = rs.getDouble("lat");
 				lng = rs.getDouble("lng");
 				coordinate_id = rs.getInt("id");
 				coordinates.add(new Coordinate(lat, lng, coordinate_id));
 				
-				// demo only
+				// TODO: remove, demo only
 				break;
 			}
 		} catch (SQLException | ClassNotFoundException sqlEx) {
@@ -95,7 +106,7 @@ public class Controller {
 	}
 	
 	public static void sendCoordinates(ArrayList<Coordinate> route, String name) {
-		// send to the database
+		// TODO: send to the database
 	}
 	
 	public static boolean checkDeviceId(String deviceId) {
@@ -103,77 +114,112 @@ public class Controller {
 			return false;
 		}
 		
-		// check id in the database
+		// TODO: check id in the database
 		return true;
 	}
 	
 	public static boolean userLoggedIn(Context context) {
 		SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
-		return sharedPreferences.getString("deviceId", "").length() > 0;
+		return sharedPreferences.getString(context.getString(R.string.preference_user_id), "").length() > 0;
 	}
 	
 	public static boolean notificationsOn(Context context) {
 		SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
-		return sharedPreferences.getString("notifications_new_message", "true").equals("true");
+		return sharedPreferences.getString(context.getString(R.string.preference_notifications_new_message), "true").equals("true");
 	}
 	
 	public static void saveUserDeviceId(Context context, String deviceId) {
 		SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.putString("deviceId", deviceId);
+		editor.putString(context.getString(R.string.preference_user_id), deviceId);
 		editor.apply();
 	}
 	
-	public static class Coordinate implements Parcelable {
-		private double lat;
-		private double lng;
-		private int id;
-		
-		Coordinate(double x, double y, int id) {
-			lat = x;
-			lng = y;
-			this.id = id;
-		}
-		
-		public double getLat() {
-			return lat;
-		}
-		
-		public double getLng() {
-			return lng;
-		}
-		
-		public int getId() {
-			return id;
-		}
-		
-		@Override
-		public int describeContents() {
-			return 0;
-		}
-		
-		@Override
-		public void writeToParcel(Parcel parcel, int i) {
-			parcel.writeDouble(lat);
-			parcel.writeDouble(lng);
-			parcel.writeInt(id);
-		}
-		
-		public static final Parcelable.Creator<Coordinate> CREATOR
-				= new Parcelable.Creator<Coordinate>() {
-			public Coordinate createFromParcel(Parcel in) {
-				return new Coordinate(in);
-			}
+	public static void sendSnapshot(final RouteActivity instance, GoogleMap map, final String routeName) {
+		GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
+			Bitmap bitmap;
 			
-			public Coordinate[] newArray(int size) {
-				return new Coordinate[size];
+			@Override
+			public void onSnapshotReady(Bitmap snapshot) {
+				try {
+					bitmap = snapshot;
+					
+					File outputDir = new File(
+							Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+							instance.getString(R.string.app_name));
+					
+					if (!outputDir.exists()) {
+						outputDir.mkdir();
+					}
+					
+					File outputFile = new File(outputDir, routeName + ".png");
+					FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+					
+					bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+					MediaScannerConnection.scanFile(instance,
+							new String[] { outputFile.getPath() },
+							new String[] { "image/png" },
+							null);
+					
+					Uri attachment = Uri.fromFile(outputFile);
+					Intent intent = new Intent();
+					intent.setAction(Intent.ACTION_SEND);
+					intent.setType("image/*");
+					intent.putExtra(Intent.EXTRA_STREAM, attachment);
+					
+					instance.startActivity(Intent.createChooser(intent, instance.getString(R.string.title_chooser)));
+				} catch (IOException e) {
+					Toast.makeText(instance, instance.getString(R.string.toast_route) + e.getMessage(), Toast.LENGTH_LONG).show();
+				}
 			}
 		};
 		
-		private Coordinate(Parcel in) {
-			lat = in.readDouble();
-			lng = in.readDouble();
-			id = in.readInt();
+		map.snapshot(callback);
+	}
+	
+	private static class CoordinatesReceiver extends BroadcastReceiver {
+		ArrayList<Coordinate> coordinates = null;
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Bundle notificationData = intent.getExtras();
+			coordinates = notificationData.getParcelableArrayList(context.getString(R.string.extra_coordinates));
+		}
+	}
+	
+	public static class AlarmCoordinatesReceiver extends CoordinatesReceiver {
+		private AlarmActivity alarmActivityInstance = null;
+		
+		public AlarmCoordinatesReceiver(AlarmActivity instance) {
+			alarmActivityInstance = instance;
+		}
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			stopCoordinatesService();
+			
+			try {
+				alarmActivityInstance.unregisterReceiver(this);
+			} catch (IllegalArgumentException ignored) {
+				// no API methods to tell if it is registered at the moment
+			}
+			
+			super.onReceive(context, intent);
+			alarmActivityInstance.positionChanged(coordinates.get(coordinates.size() - 1));
+		}
+	}
+	
+	public static class TrackerCoordinatesReceiver extends CoordinatesReceiver {
+		private TrackerActivity trackerActivityInstance = null;
+		
+		public TrackerCoordinatesReceiver(TrackerActivity instance) {
+			trackerActivityInstance = instance;
+		}
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			super.onReceive(context, intent);
+			trackerActivityInstance.drawRoute(coordinates);
 		}
 	}
 }

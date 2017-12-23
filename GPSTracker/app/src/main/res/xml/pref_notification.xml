@@ -2,15 +2,8 @@
 
 	<SwitchPreference
 		android:defaultValue="true"
-		android:key="notifications_new_message"
+		android:key="@string/preference_notifications_new_message"
 		android:title="Notifications"
-		android:summaryOn=""
-		android:summaryOff=""/>
-
-	<SwitchPreference
-		android:defaultValue="true"
-		android:key="notifications_light"
-		android:title="Light notification"
 		android:summaryOn=""
 		android:summaryOff=""/>
 

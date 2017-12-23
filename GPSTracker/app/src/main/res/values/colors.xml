@@ -14,4 +14,6 @@
 
 	<color name="primaryTextColor">#000000</color>
 	<color name="secondaryTextColor">#000000</color>
+
+	<color name="backgroundColor">#F5F5F5</color>
 </resources>

@@ -1,9 +1,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<Preference android:title="User ID"
-				android:key="user_id"/>
+				android:key="@string/preference_user_id"/>
 
 	<Preference android:title="Quit"
-				android:key="quit"/>
+				android:key="@string/preference_quit"/>
 
 </PreferenceScreen>

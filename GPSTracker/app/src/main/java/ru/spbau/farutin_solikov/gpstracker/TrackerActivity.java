@@ -1,8 +1,6 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -30,12 +28,12 @@ import java.util.ArrayList;
 public class TrackerActivity extends DrawerActivity implements OnMapReadyCallback {
 	private static final int ZOOM = 15;
 	
-	private CoordinatesReceiver receiver;
+	private Controller.TrackerCoordinatesReceiver receiver;
 	private GoogleMap map;
 	private LatLng lastPosition;
-	private Controller.Coordinate startPosition;
+	private Coordinate startPosition;
 	private boolean startImmediately = false;
-	private static ArrayList<Controller.Coordinate> route;
+	private static ArrayList<Coordinate> route;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +47,8 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		createMenu();
 		
 		Intent intent = getIntent();
-		if (intent.hasExtra("ru.spbau.farutin_solikov.gpstracker.position")) {
-			startPosition = intent.getParcelableExtra("ru.spbau.farutin_solikov.gpstracker.position");
+		if (intent.hasExtra(getString(R.string.extra_position))) {
+			startPosition = intent.getParcelableExtra(getString(R.string.extra_position));
 			startImmediately = true;
 		}
 	}
@@ -58,6 +56,7 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		
 		try {
 			unregisterReceiver(receiver);
 		} catch (IllegalArgumentException ignored) {
@@ -74,11 +73,32 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		}
 	}
 	
+	public void drawRoute(ArrayList<Coordinate> coordinates) {
+		PolylineOptions polylineOptions = new PolylineOptions().geodesic(true);
+		
+		if (lastPosition == null) {
+			Coordinate position = coordinates.get(0);
+			lastPosition = new LatLng(position.getLat(), position.getLng());
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastPosition, ZOOM));
+			route.add(position);
+		}
+		
+		polylineOptions.add(lastPosition);
+		for (Coordinate position : coordinates) {
+			polylineOptions.add(new LatLng(position.getLat(), position.getLng()));
+			route.add(position);
+		}
+		
+		Coordinate position = coordinates.get(coordinates.size() - 1);
+		lastPosition = new LatLng(position.getLat(), position.getLng());
+		
+		map.addPolyline(polylineOptions);
+	}
+	
 	private void createMenu() {
 		final FloatingActionsMenu menu = findViewById(R.id.menu_tracker);
 		
 		FloatingActionButton start = new FloatingActionButton(this);
-		start.setTitle("Start trip");
 		start.setIcon(R.drawable.ic_play_arrow_white_24dp);
 		start.setColorNormalResId(R.color.primaryColor);
 		start.setColorPressedResId(R.color.primaryLightColor);
@@ -94,7 +114,6 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		});
 		
 		FloatingActionButton stop = new FloatingActionButton(this);
-		stop.setTitle("Stop");
 		stop.setIcon(R.drawable.ic_stop_white_24dp);
 		stop.setColorNormalResId(R.color.primaryColor);
 		stop.setColorPressedResId(R.color.primaryLightColor);
@@ -102,8 +121,8 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 			@Override
 			public void onClick(View view) {
 				menu.collapse();
-				
 				Controller.stopCoordinatesService();
+				
 				try {
 					unregisterReceiver(receiver);
 				} catch (IllegalArgumentException ignored) {
@@ -113,7 +132,6 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		});
 		
 		FloatingActionButton save = new FloatingActionButton(this);
-		save.setTitle("Save route");
 		save.setIcon(R.drawable.ic_save_white_24dp);
 		save.setColorNormalResId(R.color.primaryColor);
 		save.setColorPressedResId(R.color.primaryLightColor);
@@ -121,7 +139,6 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 			@Override
 			public void onClick(View view) {
 				menu.collapse();
-				
 				saveRoute();
 			}
 		});
@@ -144,7 +161,7 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		});
 	}
 	
-	private void startTracking(Controller.Coordinate startPosition) {
+	private void startTracking(Coordinate startPosition) {
 		map.clear();
 		route = new ArrayList<>();
 		
@@ -161,14 +178,14 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		
 		Controller.startCoordinatesService(TrackerActivity.this);
 		
-		receiver = new CoordinatesReceiver();
-		IntentFilter intentSFilter = new IntentFilter("ru.spbau.farutin_solikov.gpstracker.BroadcastCoordinatesAction");
+		receiver = new Controller.TrackerCoordinatesReceiver(this);
+		IntentFilter intentSFilter = new IntentFilter(getString(R.string.broadcast_content_coordinates));
 		registerReceiver(receiver, intentSFilter);
 	}
 	
 	private void saveRoute() {
 		DialogFragment saveDialogFragment = new SaveDialogFragment();
-		saveDialogFragment.show(getSupportFragmentManager(), "Save route");
+		saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.title_dialog_save));
 	}
 	
 	public static class SaveDialogFragment extends DialogFragment {
@@ -180,54 +197,26 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 			final View view = inflater.inflate(R.layout.dialog_save, null);
 			
 			builder.setView(view)
-					.setTitle("Save route")
-					.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+					.setTitle(R.string.title_dialog_save)
+					.setPositiveButton(R.string.title_button_save, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
 							EditText nameInput = view.findViewById(R.id.route_name);
 							nameInput.setText("");
 							String name = nameInput.getText().toString();
+							
 							if (name.length() != 0) {
 								Controller.sendCoordinates(route, name);
 							}
 						}
 					})
-					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					.setNegativeButton(R.string.title_button_cancel, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 							SaveDialogFragment.this.getDialog().cancel();
 						}
 					});
 			
 			return builder.create();
-		}
-	}
-	
-	private class CoordinatesReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			Bundle notificationData = intent.getExtras();
-			ArrayList<Controller.Coordinate> coordinates =
-					notificationData.getParcelableArrayList("ru.spbau.farutin_solikov.gpstracker.coordinates");
-			
-			PolylineOptions polylineOptions = new PolylineOptions().geodesic(true);
-			
-			if (lastPosition == null) {
-				Controller.Coordinate position = coordinates.get(0);
-				lastPosition = new LatLng(position.getLat(), position.getLng());
-				map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastPosition, ZOOM));
-				route.add(position);
-			}
-
-			polylineOptions.add(lastPosition);
-			for (Controller.Coordinate position : coordinates) {
-				polylineOptions.add(new LatLng(position.getLat(), position.getLng()));
-				route.add(position);
-			}
-			
-			Controller.Coordinate position = coordinates.get(coordinates.size() - 1);
-			lastPosition = new LatLng(position.getLat(), position.getLng());
-			
-			map.addPolyline(polylineOptions);
 		}
 	}
 }

@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-
 import java.util.ArrayList;
 
 public class HistoryActivity extends DrawerActivity {
@@ -18,11 +17,12 @@ public class HistoryActivity extends DrawerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.content_history);
 				
 		final ListView historyList = findViewById(R.id.history_list);
 		
-		// get names from the database
+		// TODO: get names from the database
 		final ArrayList<String> routesNames = new ArrayList<>();
 		routesNames.add("1");
 		routesNames.add("2");
@@ -32,25 +32,24 @@ public class HistoryActivity extends DrawerActivity {
 		
 		final ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routesNames);
 		historyList.setAdapter(adapter);
-		
 		historyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				// get coordinates from the database for this route
-				ArrayList<Controller.Coordinate> route = new ArrayList<Controller.Coordinate>();
-				route.add(new Controller.Coordinate(-33.887837, 151.151667, 0));
-				route.add(new Controller.Coordinate(-33.888436, 151.151116, 0));
-				route.add(new Controller.Coordinate(-33.888509, 151.150785, 0));
-				route.add(new Controller.Coordinate(-33.888712, 151.150745, 0));
-				route.add(new Controller.Coordinate(-33.88896, 151.150773, 0));
-				route.add(new Controller.Coordinate(-33.889312, 151.149407, 0));
-				route.add(new Controller.Coordinate(-33.889691, 151.14908, 0));
-				route.add(new Controller.Coordinate(-33.890614, 151.149041, 0));
+				// TODO: get coordinates from the database for this route
+				ArrayList<Coordinate> route = new ArrayList<Coordinate>();
+				route.add(new Coordinate(-33.887837, 151.151667, 0));
+				route.add(new Coordinate(-33.888436, 151.151116, 0));
+				route.add(new Coordinate(-33.888509, 151.150785, 0));
+				route.add(new Coordinate(-33.888712, 151.150745, 0));
+				route.add(new Coordinate(-33.88896, 151.150773, 0));
+				route.add(new Coordinate(-33.889312, 151.149407, 0));
+				route.add(new Coordinate(-33.889691, 151.14908, 0));
+				route.add(new Coordinate(-33.890614, 151.149041, 0));
 				
 				
 				Intent intent = new Intent(HistoryActivity.this, RouteActivity.class);
-				intent.putExtra("ru.spbau.farutin_solikov.gpstracker.route_name", routesNames.get(position));
-				intent.putParcelableArrayListExtra("ru.spbau.farutin_solikov.gpstracker.coordinates", route);
+				intent.putExtra(getString(R.string.extra_route_name), routesNames.get(position));
+				intent.putParcelableArrayListExtra(getString(R.string.extra_coordinates), route);
 				startActivity(intent);
 			}
 		});
@@ -60,7 +59,7 @@ public class HistoryActivity extends DrawerActivity {
 			public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(HistoryActivity.this);
 				
-				builder.setPositiveButton("delete", new DialogInterface.OnClickListener() {
+				builder.setPositiveButton(getString(R.string.title_button_delete), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						routesNames.remove(i);
 						adapter.notifyDataSetChanged();
@@ -70,17 +69,17 @@ public class HistoryActivity extends DrawerActivity {
 							emptyList.setVisibility(View.VISIBLE);
 						}
 						
-						// delete route in the database
+						// TODO: delete route in the database
 					}
 				});
 				
-				builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+				builder.setNegativeButton(getString(R.string.title_button_cancel), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						
 					}
 				});
 				
-				builder.setTitle("Delete this route?");
+				builder.setTitle(getString(R.string.title_dialog_delete));
 				builder.create().show();
 				
 				return true;
@@ -92,5 +91,4 @@ public class HistoryActivity extends DrawerActivity {
 			emptyList.setVisibility(View.VISIBLE);
 		}
 	}
-	
 }
