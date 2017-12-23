@@ -9,10 +9,10 @@
 	<string name="title_dialog_delete">Delete this route?</string>
 	<string name="title_dialog_change">Change device ID?</string>
 	<string name="title_dialog_save">Save route</string>
-	<string name="title_button_delete">delete</string>
-	<string name="title_button_cancel">cancel</string>
-	<string name="title_button_change">change</string>
-	<string name="title_button_save">save</string>
+	<string name="title_button_delete">Delete</string>
+	<string name="title_button_cancel">Cancel</string>
+	<string name="title_button_change">Change</string>
+	<string name="title_button_save">Save</string>
 	<string name="title_button_login">Login</string>
 	<string name="title_button_turn_on">Turn On</string>
 	<string name="title_button_turn_off">Turn Off</string>
