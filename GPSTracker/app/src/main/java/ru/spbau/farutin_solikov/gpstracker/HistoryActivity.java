@@ -49,6 +49,7 @@ public class HistoryActivity extends DrawerActivity {
 				
 				
 				Intent intent = new Intent(HistoryActivity.this, RouteActivity.class);
+				intent.putExtra("ru.spbau.farutin_solikov.gpstracker.route_name", routesNames.get(position));
 				intent.putParcelableArrayListExtra("ru.spbau.farutin_solikov.gpstracker.coordinates", route);
 				startActivity(intent);
 			}

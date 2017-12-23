@@ -26,6 +26,7 @@
 				android:layout_height="wrap_content"
 				android:layout_gravity="end"
 				android:layout_marginRight="8dp"
+				android:layout_marginLeft="8dp"
 				android:src="@drawable/ic_more_vert_white_24dp"/>
 		</android.support.v7.widget.Toolbar>
 
