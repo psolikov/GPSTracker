@@ -37,6 +37,7 @@ public class AlarmActivity extends DrawerActivity {
 	
 	/**
 	 * Notifies user and changes layout content.
+	 *
 	 * @param position position where vehicle was moved to
 	 */
 	public void positionChanged(final Coordinate position) {
@@ -59,7 +60,7 @@ public class AlarmActivity extends DrawerActivity {
 	private void notifyUser() {
 		if (Controller.notificationsOn(this)) {
 			NotificationCompat.Builder builder =
-					new NotificationCompat.Builder(AlarmActivity.this)
+					new NotificationCompat.Builder(AlarmActivity.this, getString(R.string.alarm_channel_id))
 							.setSmallIcon(R.mipmap.ic_launcher)
 							.setContentTitle(getString(R.string.title_alarm_notification));
 			

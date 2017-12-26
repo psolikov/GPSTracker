@@ -7,9 +7,9 @@ import android.os.Parcelable;
  * Class for storing map coordinates.
  */
 public class Coordinate implements Parcelable {
-	private double lat;
-	private double lng;
-	private int id;
+	private final double lat;
+	private final double lng;
+	private final int id;
 	
 	Coordinate(double x, double y, int id) {
 		lat = x;

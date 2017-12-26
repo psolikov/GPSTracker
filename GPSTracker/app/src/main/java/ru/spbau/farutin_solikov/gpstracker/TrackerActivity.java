@@ -1,5 +1,6 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -77,6 +78,7 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 
 	/**
 	 * Draws route on Google Map.
+	 *
 	 * @param coordinates route to draw
 	 */
 	public void drawRoute(ArrayList<Coordinate> coordinates) {
@@ -197,6 +199,7 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 	public static class SaveDialogFragment extends DialogFragment {
 		@NonNull
 		@Override
+		@SuppressLint("InflateParams")
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 			final LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -208,7 +211,6 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
 							EditText nameInput = view.findViewById(R.id.route_name);
-							nameInput.setText("");
 							String name = nameInput.getText().toString();
 
 							if (name.length() != 0) {

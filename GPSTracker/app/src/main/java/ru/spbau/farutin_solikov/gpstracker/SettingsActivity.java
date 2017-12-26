@@ -44,7 +44,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private static Preference.OnPreferenceChangeListener onPreferenceChangeListener = new Preference.OnPreferenceChangeListener() {
+	private static final Preference.OnPreferenceChangeListener onPreferenceChangeListener = new Preference.OnPreferenceChangeListener() {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
 			preference.setSummary(value.toString());

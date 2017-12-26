@@ -24,6 +24,7 @@
 	<string name="extra_coordinates">ru.spbau.farutin_solikov.gpstracker.coordinates</string>
 
 	<string name="broadcast_content_coordinates">ru.spbau.farutin_solikov.gpstracker.BroadcastCoordinatesAction</string>
+	<string name="alarm_channel_id">ru.spbau.farutin_solikov.gpstracker.ALARM</string>
 
 	<string name="toast_login">Wrong Device Id</string>
 	<string name="toast_route">Failed making screenshot: </string>
@@ -43,5 +44,6 @@
 
 	<string name="pref_header_notifications">Notifications</string>
 	<string name="pref_header_user_id">User ID</string>
+	<string name="route_info_hide">Hide</string>
 
 </resources>

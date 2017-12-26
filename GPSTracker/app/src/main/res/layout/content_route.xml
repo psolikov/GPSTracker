@@ -11,7 +11,6 @@
 	tools:layout_editor_absoluteY="25dp"
 	tools:layout_editor_absoluteX="0dp">
 
-
 	<fragment
 		android:id="@+id/map"
 		android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -25,7 +24,8 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentEnd="true"
-		android:layout_alignParentRight="true"/>
+		android:layout_alignParentRight="true"
+		tools:ignore="RelativeOverlap"/>
 
 	<RelativeLayout
 		android:id="@+id/route_info"
@@ -41,9 +41,10 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:layout_marginLeft="8dp"
+			android:layout_marginStart="8dp"
 			android:layout_marginTop="8dp"
-			android:layout_marginBottom="8dp">
+			android:layout_marginBottom="8dp"
+			android:layout_marginLeft="8dp">
 
 			<TextView
 				android:id="@+id/route_length"
@@ -63,8 +64,10 @@
 			android:layout_alignParentRight="true"
 			android:layout_alignParentEnd="true"
 			android:layout_marginRight="8dp"
+			android:layout_marginEnd="8dp"
 			android:layout_marginTop="8dp"
-			android:layout_marginBottom="8dp"/>
+			android:layout_marginBottom="8dp"
+			android:contentDescription="@string/route_info_hide"/>
 	</RelativeLayout>
 
 </RelativeLayout>

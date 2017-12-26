@@ -33,13 +33,13 @@ public class HistoryActivity extends DrawerActivity {
 		routesNames.add("4");
 		routesNames.add("5");
 		
-		final ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routesNames);
+		final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, routesNames);
 		historyList.setAdapter(adapter);
 		historyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO: get coordinates from the database for this route
-				ArrayList<Coordinate> route = new ArrayList<Coordinate>();
+				ArrayList<Coordinate> route = new ArrayList<>();
 				route.add(new Coordinate(-33.887837, 151.151667, 0));
 				route.add(new Coordinate(-33.888436, 151.151116, 0));
 				route.add(new Coordinate(-33.888509, 151.150785, 0));

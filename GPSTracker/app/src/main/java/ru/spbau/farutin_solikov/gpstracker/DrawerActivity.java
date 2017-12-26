@@ -1,7 +1,8 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,30 +17,27 @@ import android.widget.ImageView;
 /**
  * Basic DrawerActivity with navigation.
  */
+@SuppressLint("Registered")
 public class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-		
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
 	
 	@Override
+	@SuppressLint("InflateParams")
 	public void setContentView(final int layoutResID) {
 		DrawerLayout drawerLayout = (DrawerLayout) getLayoutInflater().inflate(R.layout.activity_main, null);
-		FrameLayout contentFrame = (FrameLayout) drawerLayout.findViewById(R.id.content_frame);
+		FrameLayout contentFrame = drawerLayout.findViewById(R.id.content_frame);
 		getLayoutInflater().inflate(layoutResID, contentFrame, true);
 		super.setContentView(drawerLayout);
 				
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		
-		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		DrawerLayout drawer = findViewById(R.id.drawer_layout);
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 				this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-		drawer.setDrawerListener(toggle);
+		drawer.addDrawerListener(toggle);
 		toggle.syncState();
 		
-		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+		NavigationView navigationView = findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(this);
 		
 		ImageView settings = findViewById(R.id.settings);
@@ -54,7 +52,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 	
 	@Override
 	public void onBackPressed() {
-		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		DrawerLayout drawer = findViewById(R.id.drawer_layout);
 		if (drawer.isDrawerOpen(GravityCompat.START)) {
 			drawer.closeDrawer(GravityCompat.START);
 		} else {
@@ -66,7 +64,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 	}
 	
 	@Override
-	public boolean onNavigationItemSelected(MenuItem item) {
+	public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 		int id = item.getItemId();
 		Class classToStart = TrackerActivity.class;
 		
@@ -81,7 +79,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 		Intent intent = new Intent(DrawerActivity.this, classToStart);
 		startActivity(intent);
 		
-		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		DrawerLayout drawer = findViewById(R.id.drawer_layout);
 		drawer.closeDrawer(GravityCompat.START);
 		return true;
 	}

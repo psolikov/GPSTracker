@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -37,7 +38,7 @@ public class RouteActivity extends DrawerActivity implements OnMapReadyCallback 
 	
 	private GoogleMap map;
 	private String routeName;
-	private ArrayList<LatLng> route = new ArrayList<>();
+	private final ArrayList<LatLng> route = new ArrayList<>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +72,7 @@ public class RouteActivity extends DrawerActivity implements OnMapReadyCallback 
 	}
 	
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
-	
-	@Override
-	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+	public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
 		switch (requestCode) {
 			case WRITE_EXTERNAL_STORAGE_REQUEST_CODE: {
 				if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
