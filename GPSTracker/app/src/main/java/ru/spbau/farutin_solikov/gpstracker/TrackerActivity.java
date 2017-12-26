@@ -29,81 +29,81 @@ import java.util.ArrayList;
  */
 public class TrackerActivity extends DrawerActivity implements OnMapReadyCallback {
 	private static final int ZOOM = 15;
-	
+
 	private Controller.TrackerCoordinatesReceiver receiver;
 	private GoogleMap map;
 	private LatLng lastPosition;
 	private Coordinate startPosition;
 	private boolean startImmediately = false;
 	private static ArrayList<Coordinate> route;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.content_tracker);
-		
+
 		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
-		
+
 		createMenu();
-		
+
 		Intent intent = getIntent();
 		if (intent.hasExtra(getString(R.string.extra_position))) {
 			startPosition = intent.getParcelableExtra(getString(R.string.extra_position));
 			startImmediately = true;
 		}
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		
+
 		try {
 			unregisterReceiver(receiver);
 		} catch (IllegalArgumentException ignored) {
 			// no API methods to tell if it is registered at the moment
 		}
 	}
-	
+
 	@Override
 	public void onMapReady(GoogleMap googleMap) {
 		map = googleMap;
-		
+
 		if (startImmediately) {
 			startTracking(startPosition);
 		}
 	}
-	
+
 	/**
 	 * Draws route on Google Map.
 	 * @param coordinates route to draw
 	 */
 	public void drawRoute(ArrayList<Coordinate> coordinates) {
 		PolylineOptions polylineOptions = new PolylineOptions().geodesic(true);
-		
+
 		if (lastPosition == null) {
 			Coordinate position = coordinates.get(0);
 			lastPosition = new LatLng(position.getLat(), position.getLng());
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastPosition, ZOOM));
 			route.add(position);
 		}
-		
+
 		polylineOptions.add(lastPosition);
 		for (Coordinate position : coordinates) {
 			polylineOptions.add(new LatLng(position.getLat(), position.getLng()));
 			route.add(position);
 		}
-		
+
 		Coordinate position = coordinates.get(coordinates.size() - 1);
 		lastPosition = new LatLng(position.getLat(), position.getLng());
-		
+
 		map.addPolyline(polylineOptions);
 	}
-	
+
 	private void createMenu() {
 		final FloatingActionsMenu menu = findViewById(R.id.menu_tracker);
-		
+
 		FloatingActionButton start = new FloatingActionButton(this);
 		start.setIcon(R.drawable.ic_play_arrow_white_24dp);
 		start.setColorNormalResId(R.color.primaryColor);
@@ -112,13 +112,13 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 			@Override
 			public void onClick(View view) {
 				menu.collapse();
-				
+
 				if (map != null) {
 					startTracking(null);
 				}
 			}
 		});
-		
+
 		FloatingActionButton stop = new FloatingActionButton(this);
 		stop.setIcon(R.drawable.ic_stop_white_24dp);
 		stop.setColorNormalResId(R.color.primaryColor);
@@ -128,7 +128,7 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 			public void onClick(View view) {
 				menu.collapse();
 				Controller.stopCoordinatesService();
-				
+
 				try {
 					unregisterReceiver(receiver);
 				} catch (IllegalArgumentException ignored) {
@@ -136,7 +136,7 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 				}
 			}
 		});
-		
+
 		FloatingActionButton save = new FloatingActionButton(this);
 		save.setIcon(R.drawable.ic_save_white_24dp);
 		save.setColorNormalResId(R.color.primaryColor);
@@ -148,11 +148,11 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 				saveRoute();
 			}
 		});
-		
+
 		menu.addButton(start);
 		menu.addButton(stop);
 		menu.addButton(save);
-		
+
 		FloatingActionButton find = findViewById(R.id.find_tracker);
 		find.setIcon(R.drawable.ic_my_location_white_24dp);
 		find.setColorNormalResId(R.color.primaryColor);
@@ -166,11 +166,11 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 			}
 		});
 	}
-	
+
 	private void startTracking(Coordinate startPosition) {
 		map.clear();
 		route = new ArrayList<>();
-		
+
 		if (startPosition == null) {
 			lastPosition = null;
 		} else {
@@ -178,22 +178,22 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastPosition, ZOOM));
 			map.addMarker(new MarkerOptions().position(lastPosition));
 			route.add(startPosition);
-			
+
 			lastPosition = null;
 		}
-		
+
 		Controller.startCoordinatesService(TrackerActivity.this);
-		
+
 		receiver = new Controller.TrackerCoordinatesReceiver(this);
 		IntentFilter intentSFilter = new IntentFilter(getString(R.string.broadcast_content_coordinates));
 		registerReceiver(receiver, intentSFilter);
 	}
-	
+
 	private void saveRoute() {
 		DialogFragment saveDialogFragment = new SaveDialogFragment();
 		saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.title_dialog_save));
 	}
-	
+
 	public static class SaveDialogFragment extends DialogFragment {
 		@NonNull
 		@Override
@@ -201,7 +201,7 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 			final LayoutInflater inflater = getActivity().getLayoutInflater();
 			final View view = inflater.inflate(R.layout.dialog_save, null);
-			
+
 			builder.setView(view)
 					.setTitle(R.string.title_dialog_save)
 					.setPositiveButton(R.string.title_button_save, new DialogInterface.OnClickListener() {
@@ -210,7 +210,7 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 							EditText nameInput = view.findViewById(R.id.route_name);
 							nameInput.setText("");
 							String name = nameInput.getText().toString();
-							
+
 							if (name.length() != 0) {
 								Controller.sendCoordinates(route, name);
 							}
@@ -221,7 +221,7 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 							SaveDialogFragment.this.getDialog().cancel();
 						}
 					});
-			
+
 			return builder.create();
 		}
 	}

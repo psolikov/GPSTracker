@@ -24,7 +24,7 @@ public class CoordinatesService extends JobIntentService {
 		isActive = true;
 		enqueueWork(context, CoordinatesService.class, JOB_ID, work);
 	}
-	
+
 	public static void stop() {
 		isActive = false;
 	}
@@ -36,7 +36,9 @@ public class CoordinatesService extends JobIntentService {
 		double lat = 0;
 		double lng = 0;
 		int id = -1;
-		
+
+		Controller.clearTable();
+
 		while (isActive) {
 			coordinates = Controller.fetchCoordinates(id);
 			positionChanged = false;
