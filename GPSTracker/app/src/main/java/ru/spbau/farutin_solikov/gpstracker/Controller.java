@@ -16,14 +16,7 @@ import com.google.android.gms.maps.GoogleMap;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
-import java.sql.PreparedStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -35,18 +28,7 @@ public class Controller {
      * SharedPreferences filename.
      */
     public static final String PREF_FILE = "prefs";
-
-    private static final String driver = "com.mysql.jdbc.Driver";
-    private static final String url = "jdbc:mysql://146.185.144.144:3306/gps?autoReconnect=true&useSSL=false";
-    private static final String user = "android";
-
-    private static final String password = "GPSTracker-MySQL123";
-    private static Connection con;
-    private static Statement stmt = null;
-    private static PreparedStatement preparedStatement = null;
-
-    private static ResultSet rs;
-
+    
     /**
      * Starts CoordinateService.
      *
@@ -70,85 +52,14 @@ public class Controller {
      * @return new coordinates
      */
     public static ArrayList<Coordinate> fetchCoordinates(int id) {
-        ArrayList<Coordinate> coordinates = new ArrayList<>();
-
-        try {
-            Class.forName(driver);
-
-            con = DriverManager.getConnection(url, user, password);
-            String sql = "SELECT * FROM coordinates where id > ?";
-
-            preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setInt(1, id);
-            rs = preparedStatement.executeQuery();
-
-            double lat;
-            double lng;
-            int coordinate_id;
-
-            while (rs.next()) {
-                lat = rs.getDouble("lat");
-                lng = rs.getDouble("lng");
-                coordinate_id = rs.getInt("id");
-                coordinates.add(new Coordinate(lat, lng, coordinate_id));
-
-                // TODO: remove, demo only
-                break;
-            }
-        } catch (SQLException | ClassNotFoundException sqlEx) {
-            sqlEx.printStackTrace();
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException ignored) {
-            }
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException ignored) {
-            }
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-            } catch (SQLException ignored) {
-            }
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException ignored) {
-            }
-        }
-
-        return coordinates;
+        return DBManager.fetchCoordinates(id);
     }
 
     /**
      * Deletes all rows from table.
      */
     public static void clearTable() {
-        try {
-            Class.forName(driver);
-
-            con = DriverManager.getConnection(url, user, password);
-            try {
-                stmt = con.createStatement();
-                String query = "DELETE FROM coordinates";
-                int deletedRows = stmt.executeUpdate(query);
-
-            } catch (SQLException s) {
-                s.printStackTrace();
-            }
-            con.close();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        DBManager.clearTable();
     }
 
     /**
@@ -158,51 +69,7 @@ public class Controller {
      * @param name  route name
      */
     public static void sendCoordinates(ArrayList<Coordinate> route, String name) {
-        Connection conn = null;
-        Statement stmt = null;
-        try {
-            Class.forName(driver);
-
-            conn = DriverManager.getConnection(url, user, password);
-
-            stmt = conn.createStatement();
-            DatabaseMetaData dbm = conn.getMetaData();
-            ResultSet rs = dbm.getTables(null, null, name, null);
-
-            if (!rs.next()) {
-                stmt = conn.createStatement();
-                String sql = "create table " +
-                        name + " " +
-                        "like coordinates";
-                stmt.executeUpdate(sql);
-            }
-
-            for (Coordinate coordinate : route) {
-                String sql = "INSERT INTO " +
-                        name +
-                        " (lat, lng) VALUES (" +
-                        String.valueOf(coordinate.getLat()) + ", "
-                        + String.valueOf(coordinate.getLat()) + ")";
-                stmt.executeUpdate(sql);
-            }
-
-        } catch (SQLException se) {
-            se.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (stmt != null)
-                    conn.close();
-            } catch (SQLException e) {
-            }
-            try {
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
-        }
+        DBManager.sendCoordinates(route, name);
     }
 
     /**
@@ -212,12 +79,7 @@ public class Controller {
      * @return true if id has correct format and exists, false otherwise
      */
     public static boolean checkDeviceId(String deviceId) {
-        if (deviceId.length() % 5 != 4) {
-            return false;
-        }
-
-        // TODO: check id in the database
-        return true;
+        return deviceId.length() % 5 == 4 && DBManager.checkDeviceId(deviceId);
     }
 
     /**
@@ -235,7 +97,7 @@ public class Controller {
      * Checks whether notifications are turn on or not.
      *
      * @param context context with SharedPreferences
-     * @return
+     * @return true if notifications are turn on, false otherwise
      */
     public static boolean notificationsOn(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
@@ -305,7 +167,7 @@ public class Controller {
     }
 
     /**
-     * Class to receive coordinates broadcasted by CoordinatorService.
+     * Class to receive coordinates broadcast by CoordinatorService.
      */
     private static class CoordinatesReceiver extends BroadcastReceiver {
         ArrayList<Coordinate> coordinates = null;
