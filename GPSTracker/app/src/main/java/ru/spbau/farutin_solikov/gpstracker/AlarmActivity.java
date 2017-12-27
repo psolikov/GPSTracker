@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * Alarm mode - notifying user once vehicle has changed position.
@@ -42,9 +43,9 @@ public class AlarmActivity extends DrawerActivity {
 	 */
 	public void positionChanged(final Coordinate position) {
 		notifyUser();
-		setContentView(R.layout.content_alarm_changed);
 		
-		Button track = findViewById(R.id.track_position);
+		Button track = findViewById(R.id.alarm_button);
+		track.setText(R.string.title_button_track_position);
 		track.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -55,6 +56,9 @@ public class AlarmActivity extends DrawerActivity {
 				startActivity(intent);
 			}
 		});
+		
+		TextView message = findViewById(R.id.alarm_message);
+		message.setVisibility(View.VISIBLE);
 	}
 	
 	private void notifyUser() {
@@ -86,20 +90,18 @@ public class AlarmActivity extends DrawerActivity {
 	}
 	
 	private void setUpButtons() {
-		Button alarmOn = findViewById(R.id.alarm_on);
-		alarmOn.setOnClickListener(new View.OnClickListener() {
+		final Button alarmButton = findViewById(R.id.alarm_button);
+		alarmButton.setText(R.string.title_button_turn_on);
+		alarmButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				setContentView(R.layout.content_alarm_active);
-				
 				Controller.startCoordinatesService(AlarmActivity.this);
 				
-				Button alarmOff = findViewById(R.id.alarm_off);
-				alarmOff.setOnClickListener(new View.OnClickListener() {
+				alarmButton.setText(R.string.title_button_turn_off);
+				alarmButton.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
 						closeNotification();
-						setContentView(R.layout.content_alarm);
 						setUpButtons();
 						
 						Controller.stopCoordinatesService();
