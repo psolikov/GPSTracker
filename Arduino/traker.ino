@@ -1,6 +1,9 @@
 #include <SoftwareSerial.h>
 SoftwareSerial GSMport(3, 2); // RX, TX
 
+String user = ""; //Write here your user name
+String pass = ""; //Write here your password
+
 typedef struct {
     String latitude;
     String longitude;
@@ -127,7 +130,7 @@ void gprs_send(String dataa, String datab, int dataA0, int dataA1) {
   delay(1000);
   Serial.println(ReadGSM());
   Serial.println("setup url");
-  tempstr = String("AT+HTTPPARA=\"URL\",\"146.185.144.144/gps/?user=<user>&password=<pass>&db=<db>&lat=" + dataa + "&lng=" + datab + "&a0=" + String(dataA0) +"&a1=" + String(dataA1) +"\"");
+  tempstr = String("AT+HTTPPARA=\"URL\",\"146.185.144.144/gps/?user=" + user + "&password=" + pass + "&db=<db>&lat=" + dataa + "&lng=" + datab + "&a0=" + String(dataA0) +"&a1=" + String(dataA1) +"\"");
   GSMport.println(tempstr);
   Serial.println(tempstr);
   delay(1000);
