@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * Activity to track current position and display route on the map.
  */
 public class TrackerActivity extends DrawerActivity implements OnMapReadyCallback {
-	private static final int ZOOM = 15;
+	private static final int ZOOM = 20;
 
 	private Controller.TrackerCoordinatesReceiver receiver;
 	private GoogleMap map;
@@ -176,12 +176,15 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
 		if (startPosition == null) {
 			lastPosition = null;
 		} else {
+			// кажется запись в lastPosition можно заменить на запись в локальную переменную
+			//
+			// Лишней была строчка в конце этого блока.
 			lastPosition = new LatLng(startPosition.getLat(), startPosition.getLng());
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastPosition, ZOOM));
 			map.addMarker(new MarkerOptions().position(lastPosition));
 			route.add(startPosition);
 
-			lastPosition = null;
+			//lastPosition = null;
 		}
 
 		Controller.startCoordinatesService(TrackerActivity.this);

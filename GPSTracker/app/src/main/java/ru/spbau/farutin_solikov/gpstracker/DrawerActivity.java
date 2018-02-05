@@ -17,8 +17,9 @@ import android.widget.ImageView;
 /**
  * Basic DrawerActivity with navigation.
  */
-@SuppressLint("Registered")
-public class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+// @SuppressLint("Registered")
+// Все же, видимо, правильнее сделать так как предлагает IDE (в сплывающем сообщении можно нажать "more" и получить больше информации)
+public abstract class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 	
 	@Override
 	@SuppressLint("InflateParams")

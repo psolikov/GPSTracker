@@ -11,9 +11,12 @@ public class Coordinate implements Parcelable {
 	private final double lng;
 	private final int id;
 	
-	Coordinate(double x, double y, int id) {
-		lat = x;
-		lng = y;
+	Coordinate(double lat, double lng, int id) {
+		// [minor] неконсистентно: `this.foo`; `foo`
+		// почему то `x` то `lat`?
+		// fixed
+		this.lat = lat;
+		this.lng = lng;
 		this.id = id;
 	}
 	

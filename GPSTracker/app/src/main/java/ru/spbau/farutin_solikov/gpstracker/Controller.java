@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -51,7 +52,7 @@ public class Controller {
      * @param id id of the coordinate after which should take new coordinates
      * @return new coordinates
      */
-    public static ArrayList<Coordinate> fetchCoordinates(int id) {
+    public static List<Coordinate> fetchCoordinates(int id) {
         return DBManager.fetchCoordinates(id);
     }
 
@@ -68,6 +69,10 @@ public class Controller {
      * @param route route to save
      * @param name  route name
      */
+    // (?) Почему данные получаете через сервис, а отправляете напрямую?
+    //
+    // Сервис нужен, чтобы данные считывались постоянно после запуска и до его отключения
+    // (причем не в главном потоке), а отправить нужно единожды.
     public static void sendCoordinates(ArrayList<Coordinate> route, String name) {
         DBManager.sendCoordinates(route, name);
     }
@@ -79,7 +84,7 @@ public class Controller {
      * @return true if id has correct format and exists, false otherwise
      */
     public static boolean checkDeviceId(String deviceId) {
-        return deviceId.length() % 5 == 4 && DBManager.checkDeviceId(deviceId);
+        return deviceId.length() % 5 == 4 && DBManager.isValidDeviceId(deviceId);
     }
 
     /**
@@ -126,13 +131,13 @@ public class Controller {
      */
     public static void sendSnapshot(final RouteActivity instance, GoogleMap map, final String routeName) {
         GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
-            Bitmap bitmap;
+            // зачем заводить поле для этого?
+            //Bitmap bitmap;
+            // fixed
 
             @Override
             public void onSnapshotReady(Bitmap snapshot) {
                 try {
-                    bitmap = snapshot;
-
                     File outputDir = new File(
                             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                             instance.getString(R.string.app_name));
@@ -144,7 +149,7 @@ public class Controller {
                     File outputFile = new File(outputDir, routeName + ".png");
                     FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
 
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+                    snapshot.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
                     MediaScannerConnection.scanFile(instance,
                             new String[]{outputFile.getPath()},
                             new String[]{"image/png"},
@@ -183,7 +188,13 @@ public class Controller {
      * Once coordinates are received, notifies AlarmActivity.
      */
     public static class AlarmCoordinatesReceiver extends CoordinatesReceiver {
-        private AlarmActivity alarmActivityInstance = null;
+        // можно сделать final
+        // (*) но зачем?
+        //
+        // AlarmCoordinatesReceiver создается для конкретного экземпляра AlarmActivity,
+        // к которому он и должен быть привязан. Ключевым словом final показываем, что
+        // менять этот экземпляр на другой нельзя.
+        private final AlarmActivity alarmActivityInstance;
 
         public AlarmCoordinatesReceiver(AlarmActivity instance) {
             alarmActivityInstance = instance;
@@ -208,7 +219,7 @@ public class Controller {
      * Once coordinates are received, draws route in TrackerActivity.
      */
     public static class TrackerCoordinatesReceiver extends CoordinatesReceiver {
-        private TrackerActivity trackerActivityInstance = null;
+        private final TrackerActivity trackerActivityInstance;
 
         public TrackerCoordinatesReceiver(TrackerActivity instance) {
             trackerActivityInstance = instance;

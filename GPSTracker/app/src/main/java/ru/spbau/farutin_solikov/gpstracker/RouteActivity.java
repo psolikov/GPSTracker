@@ -59,7 +59,13 @@ public class RouteActivity extends DrawerActivity implements OnMapReadyCallback 
 		
 		setUpUIElements();
 	}
-	
+
+	// не должно ли это поведение общим для всех активити?
+	//
+	// Для основных трех активити (к которым есть доступ через меню слева в NavigationView)
+	// в этом месте хочется выходить из приложения (как и написано в соответствующем методе
+	// в DrawerActivity). Пользователь может какое-то количество раз между ними переключаться
+	// из меню, но по смыслу они не являются предками друг друга в плане иерархии активити.
 	@Override
 	public void onBackPressed() {
 		DrawerLayout drawer = findViewById(R.id.drawer_layout);

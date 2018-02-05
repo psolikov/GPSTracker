@@ -80,12 +80,17 @@ public class AlarmActivity extends DrawerActivity {
 			builder.setAutoCancel(true);
 			
 			NotificationManager notifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+			assert notifyManager != null;
+			// IDE тут "жаловался" потому что теоретически `notifyManager` может содержать `null`,
+			// один из способов его успокоить это написать `assert`.
+			// Лучше, конечно, как-то обрабобтать эту ситуацию, но это не всегда возможно.
 			notifyManager.notify(ALARM_NOTIFICATION_ID, builder.build());
 		}
 	}
 	
 	private void closeNotification() {
 		NotificationManager notifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		assert notifyManager != null;
 		notifyManager.cancel(ALARM_NOTIFICATION_ID);
 	}
 	

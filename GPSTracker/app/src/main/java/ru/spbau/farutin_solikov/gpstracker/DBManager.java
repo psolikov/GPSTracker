@@ -1,5 +1,7 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
+import android.util.Log;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -8,32 +10,41 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for interaction with the database.
  */
 public class DBManager {
+	private static final String TAG = "DBManager";
+	
 	private static final String driver = "com.mysql.jdbc.Driver";
 	private static final String url = "jdbc:mysql://146.185.144.144:3306/gps?autoReconnect=true&useSSL=false";
+	// На всякий случай напишу, что так делать не надо, но для прототипа не критично.
 	private static final String user = "android";
 	private static final String password = "GPSTracker-MySQL123";
-	
+
 	/**
 	 * Fetches new coordinates from the database.
 	 *
 	 * @param id id of the coordinate after which should take new coordinates
 	 * @return new coordinates
 	 */
-	public static ArrayList<Coordinate> fetchCoordinates(int id) {
+	// Лучше возвращать List<T>, а ингда даже Collection<T>
+	// (*) почему?
+	//
+	// Более общий тип, чтобы методы, использующие возвращаемое значение,
+	// меньше зависели от реализации данного метода.
+	public static List<Coordinate> fetchCoordinates(int id) {
 		Connection con = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
 		
 		ArrayList<Coordinate> coordinates = new ArrayList<>();
-		
+
 		try {
 			Class.forName(driver);
-			
+
 			con = DriverManager.getConnection(url, user, password);
 			String sql = "SELECT * FROM coordinates where id > ?";
 			
@@ -54,12 +65,18 @@ public class DBManager {
 				// TODO: remove, demo only
 				break;
 			}
-		} catch (SQLException | ClassNotFoundException sqlEx) {
-			sqlEx.printStackTrace();
+		} catch (SQLException | ClassNotFoundException e) {
+			// лучше логировать https://developer.android.com/reference/android/util/Log.html
+			// fixed
+			Log.w(TAG, e.getMessage());
 		} finally {
+			// было бы логичнее/правильнее закрывать ресурсы в обратном порядке
+			// (*) почему?
+			//
+			// Ресурсы, созданные позже, могут зависеть от ресурсов, созданных раньше.
 			try {
-				if (con != null) {
-					con.close();
+				if (rs != null) {
+					rs.close();
 				}
 			} catch (SQLException ignored) {
 			}
@@ -70,8 +87,8 @@ public class DBManager {
 			} catch (SQLException ignored) {
 			}
 			try {
-				if (rs != null) {
-					rs.close();
+				if (con != null) {
+					con.close();
 				}
 			} catch (SQLException ignored) {
 			}
@@ -121,7 +138,8 @@ public class DBManager {
 			stmt = con.createStatement();
 			DatabaseMetaData dbm = con.getMetaData();
 			ResultSet rs = dbm.getTables(null, null, name, null);
-			
+
+			// странное решение с созданием отдельной таблицы для каждого route
 			if (!rs.next()) {
 				stmt = con.createStatement();
 				String sql = "create table "
@@ -161,8 +179,10 @@ public class DBManager {
 	 * @param deviceId input id
 	 * @return true if id exists, false otherwise
 	 */
+	// возможно стоит переименовать, например в isExistingDeviceId или isValidDeviceId
+	// fixed
 	@SuppressWarnings("SameReturnValue")
-	public static boolean checkDeviceId(@SuppressWarnings("UnusedParameters") String deviceId) {
+	public static boolean isValidDeviceId(@SuppressWarnings("UnusedParameters") String deviceId) {
 		// TODO: check id in the database
 		return true;
 	}
