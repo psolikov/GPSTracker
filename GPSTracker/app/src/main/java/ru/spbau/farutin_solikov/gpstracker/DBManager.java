@@ -1,10 +1,8 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

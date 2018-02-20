@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -33,6 +34,7 @@ import static java.lang.Thread.sleep;
  * Activity to display saved route on the map.
  */
 public class RouteActivity extends DrawerActivity implements OnMapReadyCallback {
+	private static final String TAG = "RouteActivity";
 	private static final int ZOOM = 15;
 	private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1;
 	
@@ -141,7 +143,7 @@ public class RouteActivity extends DrawerActivity implements OnMapReadyCallback 
 				try {
 					sleep(500);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					Log.w(TAG, e.getMessage());
 				}
 				
 				ObjectAnimator animY = ObjectAnimator.ofFloat(infoLayout, View.TRANSLATION_Y, 0, -1 * infoLayout.getHeight());
@@ -161,7 +163,7 @@ public class RouteActivity extends DrawerActivity implements OnMapReadyCallback 
 				try {
 					sleep(500);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					Log.w(TAG, e.getMessage());
 				}
 				
 				ObjectAnimator animX = ObjectAnimator.ofFloat(find, View.TRANSLATION_X, find.getWidth(), 0);
