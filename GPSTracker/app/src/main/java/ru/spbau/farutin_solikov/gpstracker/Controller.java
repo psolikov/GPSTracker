@@ -52,7 +52,7 @@ public class Controller {
      * @param context context with SharedPreferences
      * @return stored deviceId
      */
-    public static String getUserID(Context context){
+    public static String getUserID(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
         return sharedPreferences.getString(context.getString(R.string.preference_user_id), "");
     }
@@ -65,6 +65,15 @@ public class Controller {
      */
     public static List<Coordinate> fetchCoordinates(int id) {
         return DBManager.fetchCoordinates(id);
+    }
+
+    /**
+     * Fetches all displacements from the database.
+     *
+     * @return all displacements
+     */
+    public static List<Displacement> fetchDisplacements() {
+        return DBManager.fetchDisplacements();
     }
 
     /**
@@ -84,7 +93,7 @@ public class Controller {
     //
     // Сервис нужен, чтобы данные считывались постоянно после запуска и до его отключения
     // (причем не в главном потоке), а отправить нужно единожды.
-    public static void sendCoordinates(ArrayList<Coordinate> route, String name) {
+    public static void sendCoordinates(List<Coordinate> route, String name) {
         DBManager.sendCoordinates(route, name);
     }
 
@@ -184,6 +193,26 @@ public class Controller {
         };
 
         map.snapshot(callback);
+    }
+
+    /**
+     * Fetches piece of a route.
+     *
+     * @param start start position
+     * @param stop stop position
+     * @return coordinates
+     */
+    public static List<Coordinate> fetchCoordinates(int start, int stop) {
+        return DBManager.fetchCoordinates(start, stop);
+    }
+
+    /**
+     * Deletes corresponding route in the database
+     *
+     * @param name of route to be deleted
+     */
+    public static void deleteDisplacement(String name){
+        DBManager.deleteDisplacement(name);
     }
 
     /**

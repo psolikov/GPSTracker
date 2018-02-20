@@ -246,25 +246,4 @@ public class TrackerActivity extends DrawerActivity implements OnMapReadyCallbac
             return null;
         }
     }
-
-    /**
-     * A route with name.
-     */
-    private static class Route {
-        public ArrayList<Coordinate> getRoute() {
-            return route;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        private ArrayList<Coordinate> route;
-        private String name;
-
-        Route(ArrayList<Coordinate> route, String name) {
-            this.route = route;
-            this.name = name;
-        }
-    }
 }

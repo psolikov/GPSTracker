@@ -103,6 +103,117 @@ public class DBManager {
         return coordinates;
     }
 
+    public static List<Coordinate> fetchCoordinates(int start, int stop) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+
+        ArrayList<Coordinate> coordinates = new ArrayList<>();
+
+        try {
+            Class.forName(driver);
+
+            con = DriverManager.getConnection(url, user, password);
+            String sql = "SELECT * FROM " + deviceId + "_all     " + "where id > ? and id < ?";
+
+            preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setInt(1, start - 1);
+            preparedStatement.setInt(2, stop + 1);
+            rs = preparedStatement.executeQuery();
+
+            double lat;
+            double lng;
+            int coordinate_id;
+
+            System.err.println(start + " " + stop);
+            while (rs.next()) {
+                lat = rs.getDouble("lat");
+                lng = rs.getDouble("lng");
+                coordinate_id = rs.getInt("id");
+                coordinates.add(new Coordinate(lat, lng, coordinate_id));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Log.w(TAG, e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ignored) {
+            }
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException ignored) {
+            }
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException ignored) {
+            }
+        }
+
+        return coordinates;
+    }
+
+    /**
+     * Fetches all displacements from the database.
+     *
+     * @return all displacement
+     */
+    public static List<Displacement> fetchDisplacements() {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+
+        ArrayList<Displacement> displacements = new ArrayList<>();
+
+        try {
+            Class.forName(driver);
+
+            con = DriverManager.getConnection(url, user, password);
+            String sql = "SELECT * FROM " + deviceId + "_routes ";
+
+            preparedStatement = con.prepareStatement(sql);
+            rs = preparedStatement.executeQuery();
+
+            int start, stop;
+            String name;
+
+            while (rs.next()) {
+                name = rs.getString("name");
+                start = rs.getInt("start");
+                stop = rs.getInt("stop");
+                displacements.add(new Displacement(start, stop, name));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            Log.w(TAG, e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ignored) {
+            }
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException ignored) {
+            }
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException ignored) {
+            }
+        }
+
+        return displacements;
+    }
+
     /**
      * Deletes all rows from table.
      */
@@ -128,12 +239,38 @@ public class DBManager {
     }
 
     /**
+     * Delete corresponding route in database
+     *
+     * @param name of route
+     */
+    public static void deleteDisplacement(String name) {
+        try {
+            Class.forName(driver);
+
+            Connection con = DriverManager.getConnection(url, user, password);
+
+            try {
+                String table = deviceId + "_routes";
+                String query = "delete from " + table + " where name = '" + name + "' limit 1";
+                PreparedStatement preparedStatement = con.prepareStatement(query);
+                preparedStatement.executeUpdate(query);
+            } catch (SQLException e) {
+                Log.w(TAG, e.getMessage());
+            }
+
+            con.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            Log.w(TAG, e.getMessage());
+        }
+    }
+
+    /**
      * Saves route to the database.
      *
      * @param route route to save
      * @param name  route name
      */
-    public static void sendCoordinates(ArrayList<Coordinate> route, String name) {
+    public static void sendCoordinates(List<Coordinate> route, String name) {
         Connection con = null;
         Statement stmt = null;
 
@@ -209,7 +346,6 @@ public class DBManager {
     // возможно стоит переименовать, например в isExistingDeviceId или isValidDeviceId
     // fixed
     public static boolean isValidDeviceId(String deviceId) {
-        // TODO: check id in the database
         Connection con = null;
         PreparedStatement preparedStatement;
         ResultSet rs;
