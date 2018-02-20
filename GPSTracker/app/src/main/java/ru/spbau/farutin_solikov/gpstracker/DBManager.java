@@ -1,5 +1,6 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.sql.Connection;
@@ -17,12 +18,17 @@ import java.util.List;
  */
 public class DBManager {
     private static final String TAG = "DBManager";
+    private static String deviceId = "";
 
     private static final String driver = "com.mysql.jdbc.Driver";
     private static final String url = "jdbc:mysql://146.185.144.144:3306/gps?autoReconnect=true&useSSL=false";
     // На всякий случай напишу, что так делать не надо, но для прототипа не критично.
     private static final String user = "android";
     private static final String password = "GPSTracker-MySQL123";
+
+    public static void setDeviceId(String deviceId) {
+        DBManager.deviceId = deviceId;
+    }
 
     /**
      * Fetches new coordinates from the database.
@@ -46,7 +52,7 @@ public class DBManager {
             Class.forName(driver);
 
             con = DriverManager.getConnection(url, user, password);
-            String sql = "SELECT * FROM coordinates where id > ?";
+            String sql = "SELECT * FROM " + deviceId + "_coordinates " + "where id > ?";
 
             preparedStatement = con.prepareStatement(sql);
             preparedStatement.setInt(1, id);
@@ -107,16 +113,17 @@ public class DBManager {
             Connection con = DriverManager.getConnection(url, user, password);
 
             try {
-                Statement stmt = con.createStatement();
-                String query = "DELETE FROM coordinates";
-                stmt.executeUpdate(query);
-            } catch (SQLException s) {
-                s.printStackTrace();
+                String table = deviceId + "_coordinates";
+                String query = "DELETE FROM " + table;
+                PreparedStatement preparedStatement = con.prepareStatement(query);
+                preparedStatement.executeUpdate(query);
+            } catch (SQLException e) {
+                Log.w(TAG, e.getMessage());
             }
 
             con.close();
         } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
+            Log.w(TAG, e.getMessage());
         }
     }
 
@@ -136,39 +143,59 @@ public class DBManager {
             con = DriverManager.getConnection(url, user, password);
 
             stmt = con.createStatement();
-            DatabaseMetaData dbm = con.getMetaData();
-            ResultSet rs = dbm.getTables(null, null, name, null);
+
+            int start = -1, stop = -1;
+
+            String get_maxID = "select MAX(id) from " + deviceId + "_all";
+
+            ResultSet maxID = stmt.executeQuery(get_maxID);
+
+            if (maxID.next()) {
+                start = maxID.getInt(1);
+            }
 
             // странное решение с созданием отдельной таблицы для каждого route
-            if (!rs.next()) {
-                stmt = con.createStatement();
-                String sql = "create table "
-                        + name + " "
-                        + "like coordinates";
-                stmt.executeUpdate(sql);
+            //fixed
+
+            if (route != null) {
+                for (Coordinate coordinate : route) {
+                    String sql = "INSERT INTO "
+                            + deviceId
+                            + "_all"
+                            + " (lat, lng) VALUES ("
+                            + String.valueOf(coordinate.getLat()) + ", "
+                            + String.valueOf(coordinate.getLng()) + ")";
+                    stmt.executeUpdate(sql);
+                }
             }
 
-            for (Coordinate coordinate : route) {
-                String sql = "INSERT INTO "
-                        + name
-                        + " (lat, lng) VALUES ("
-                        + String.valueOf(coordinate.getLat()) + ", "
-                        + String.valueOf(coordinate.getLat()) + ")";
-                stmt.executeUpdate(sql);
+            maxID = stmt.executeQuery(get_maxID);
+
+            if (maxID.next()) {
+                stop = maxID.getInt(1);
             }
+
+            String sql = "INSERT INTO "
+                    + deviceId
+                    + "_routes"
+                    + " (name, start, stop) VALUES ('"
+                    + name + "', "
+                    + start + ", "
+                    + stop + ")";
+            stmt.executeUpdate(sql);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.w(TAG, e.getMessage());
         } finally {
             try {
                 if (stmt != null)
-                    con.close();
+                    stmt.close();
             } catch (SQLException ignored) {
             }
             try {
                 if (con != null)
                     con.close();
-            } catch (SQLException se) {
-                se.printStackTrace();
+            } catch (SQLException e) {
+                Log.w(TAG, e.getMessage());
             }
         }
     }
@@ -208,7 +235,7 @@ public class DBManager {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.w(TAG, e.getMessage());
         } finally {
             try {
                 if (stmt != null)
@@ -218,8 +245,8 @@ public class DBManager {
             try {
                 if (con != null)
                     con.close();
-            } catch (SQLException se) {
-                se.printStackTrace();
+            } catch (SQLException e) {
+                Log.w(TAG, e.getMessage());
             }
         }
 

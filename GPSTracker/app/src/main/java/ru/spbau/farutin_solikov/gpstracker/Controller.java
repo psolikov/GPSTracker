@@ -29,7 +29,7 @@ public class Controller {
      * SharedPreferences filename.
      */
     public static final String PREF_FILE = "prefs";
-    
+
     /**
      * Starts CoordinateService.
      *
@@ -44,6 +44,17 @@ public class Controller {
      */
     public static void stopCoordinatesService() {
         CoordinatesService.stop();
+    }
+
+    /**
+     * Returns stored user id
+     *
+     * @param context context with SharedPreferences
+     * @return stored deviceId
+     */
+    public static String getUserID(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
+        return sharedPreferences.getString(context.getString(R.string.preference_user_id), "");
     }
 
     /**
@@ -84,7 +95,9 @@ public class Controller {
      * @return true if id has correct format and exists, false otherwise
      */
     public static boolean checkDeviceId(String deviceId) {
-        return deviceId.length() % 5 == 4 && DBManager.isValidDeviceId(deviceId);
+        //For testing
+        //return deviceId.length() % 5 == 4 && DBManager.isValidDeviceId(deviceId);
+        return DBManager.isValidDeviceId(deviceId);
     }
 
     /**
@@ -116,6 +129,8 @@ public class Controller {
      * @param deviceId id to save
      */
     public static void saveUserDeviceId(Context context, String deviceId) {
+        DBManager.setDeviceId(deviceId);
+
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(context.getString(R.string.preference_user_id), deviceId);
