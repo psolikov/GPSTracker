@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import static java.lang.Math.abs;
  * This class checks periodically whether position of the vehicle has been changed or not.
  */
 public class CoordinatesService extends JobIntentService {
+	private static final String TAG = "CoordinatesService";
 	public static final int JOB_ID = 1000;
 	private static final double EPS = 1.0E-06;
 	private static final int SLEEP = 1000;
@@ -46,7 +48,7 @@ public class CoordinatesService extends JobIntentService {
 		//
 		// Там лежат координаты, оставшиеся от предыдущей поездки, сейчас они уже не нужны.
 		// Более того, иначе они будут считаться первыми координатами нового запуска.
-		//Controller.clearTable();
+		Controller.clearTable();
 
 		while (isActive) {
 			coordinates = Controller.fetchCoordinates(id);
@@ -73,7 +75,7 @@ public class CoordinatesService extends JobIntentService {
 			try {
 				Thread.sleep(SLEEP);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				Log.w(TAG, e.getMessage());
 			}
 		}
 	}
