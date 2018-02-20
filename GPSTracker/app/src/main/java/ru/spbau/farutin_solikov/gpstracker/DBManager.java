@@ -1,10 +1,8 @@
 package ru.spbau.farutin_solikov.gpstracker;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -209,7 +207,6 @@ public class DBManager {
     // возможно стоит переименовать, например в isExistingDeviceId или isValidDeviceId
     // fixed
     public static boolean isValidDeviceId(String deviceId) {
-        // TODO: check id in the database
         Connection con = null;
         PreparedStatement preparedStatement;
         ResultSet rs;

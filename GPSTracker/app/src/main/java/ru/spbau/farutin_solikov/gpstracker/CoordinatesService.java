@@ -46,7 +46,7 @@ public class CoordinatesService extends JobIntentService {
 		//
 		// Там лежат координаты, оставшиеся от предыдущей поездки, сейчас они уже не нужны.
 		// Более того, иначе они будут считаться первыми координатами нового запуска.
-		Controller.clearTable();
+		//Controller.clearTable();
 
 		while (isActive) {
 			coordinates = Controller.fetchCoordinates(id);
